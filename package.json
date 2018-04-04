@@ -1,0 +1,9 @@
+{
+  "name": "powerade",
+  "version": "0.0.0",
+  "description": "stakeholder visualization",
+  "main": "index.js",
+  "repository": "https://github.com/afaundez/powerade.git",
+  "author": "Alvaro Faundez <alvaro@faundez.net>",
+  "license": "MIT"
+}
