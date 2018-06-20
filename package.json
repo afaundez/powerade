@@ -1,9 +1,24 @@
 {
   "name": "powerade",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "stakeholder visualization",
-  "main": "index.js",
-  "repository": "https://github.com/afaundez/powerade.git",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afaundez/powerade.git"
+  },
+  "keywords": [],
   "author": "Alvaro Faundez <alvaro@faundez.net>",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/afaundez/powerade/issues"
+  },
+  "homepage": "https://github.com/afaundez/powerade#readme",
+  "devDependencies": {
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
+  }
 }
