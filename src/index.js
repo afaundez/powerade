@@ -1,4 +1,4 @@
-import { Powerade } from './powerade.js'
+import { Powerade } from './powerade.js';
 
 export function init(target, elements, options = {}) {
   if (!target) { return; }

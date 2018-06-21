@@ -8,7 +8,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-import { style } from './style.js'
+import { style } from './style.js';
 const DEFAULT_OPTIONS = {
  dimensions: {
    x: { cardinality: 4, label: 'x-dimension'},
@@ -31,7 +31,7 @@ const DEFAULT_OPTIONS = {
 export class Powerade {
 
   static get DEFAULT_OPTIONS(){
-    return DEFAULT_OPTIONS
+    return DEFAULT_OPTIONS;
   }
 
   constructor(target, elements, options) {
@@ -40,14 +40,14 @@ export class Powerade {
     const merge = (target, source) => {
       // Iterate through `source` properties and if an `Object` set property to merge of `target` and `source` properties
       for (let key of Object.keys(source)) {
-        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]))
+        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]));
       }
 
       // Join `target` and modified `source`
-      if (source instanceof Array) { target = source }
-      else { Object.assign(target || {}, source) }
-      return target
-    }
+      if (source instanceof Array) { target = source; }
+      else { Object.assign(target || {}, source); }
+      return target;
+    };
     this.options = merge(Powerade.DEFAULT_OPTIONS, options);
   }
 
