@@ -127,4 +127,4 @@ const css = `
   border-style: solid;
 }
 `;
-export const style = minimizeData(css)
+export const style = minimizeData(css);

@@ -1,14 +1,5 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS202: Simplify dynamic range loops
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 import { style } from './style.js';
+
 const DEFAULT_OPTIONS = {
  dimensions: {
    x: { cardinality: 4, label: 'x-dimension'},
@@ -83,7 +74,7 @@ export class Powerade {
       table.appendChild(thead);
       const first_column = this.grid_attribute_for('y', 'first');
       const last_column = this.grid_attribute_for('y', 'last');
-      if (this.options['border'].includes('top')) {
+      if (this.options.border.includes('top')) {
         let asc, end;
         const extra_top_row = document.createElement('tr');
         for (column = first_column, end = last_column, asc = first_column <= end; asc ? column <= end : column >= end; asc ? column++ : column--) {
@@ -146,8 +137,8 @@ export class Powerade {
     let dimension_label;
     const view = target.querySelector('table#powerade-view');
     const outside_dropzone = target.querySelector("#powerade-outside");
-    for (let attribute in options['dataset']) {
-      const value = options['dataset'][attribute];
+    for (let attribute in options.dataset) {
+      const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
     }
     for (let axis of ['x', 'y']) {
@@ -156,35 +147,36 @@ export class Powerade {
       const header = view.querySelector(`th#dimension-${axis}`);
       header.textContent = dimension_label;
     }
+    const mapAxis = function (axis) {
+      const values = element.values;
+      dimension_label = this.axis_attribute_for(axis, 'label');
+      return values[dimension_label] || 'unknown';
+    };
     for (var element of elements) {
-      var left;
-      const [x_value, y_value, z_value] = ['x', 'y', 'z'].map((function(axis) {
-        const values = element['values'];
-        dimension_label = this.axis_attribute_for(axis, 'label');
-        return values[dimension_label] || 'unknown';
-        }), this);
+      const [x_value, y_value, z_value] = ['x', 'y', 'z'].map(mapAxis, this);
       const dropzone_id = ['i', x_value, y_value].join('-');
+      var left;
       const dropzone = (left = view.querySelector(`td#${dropzone_id}`)) != null ? left : outside_dropzone;
       const draggable = document.createElement('div');
-      draggable.setAttribute('id', element['id']);
+      draggable.setAttribute('id', element.id);
       draggable.setAttribute('draggable', true);
       draggable.setAttribute('class', `item z-gradient-${z_value}`);
-      if (this.options['display']['avatar'] && (element['avatar'] != null)) {
+      if (this.options.display.avatar && (element.avatar != null)) {
         const draggable_avatar = document.createElement('img');
-        draggable_avatar.setAttribute('src', element['avatar']);
-        const missing_avatar = this.options['display']['missing_avatar'];
+        draggable_avatar.setAttribute('src', element.avatar);
+        const missing_avatar = this.options.display.missing_avatar;
         draggable_avatar.setAttribute('onerror', `this.src='${missing_avatar}'`);
         draggable.appendChild(draggable_avatar);
       }
       const draggable_label = document.createElement('span');
-      draggable_label.append(element['label']);
-      if (this.options['display']['label']) { draggable.appendChild(draggable_label); }
+      draggable_label.append(element.label);
+      if (this.options.display.label) { draggable.appendChild(draggable_label); }
       dropzone.appendChild(draggable);
     }
     this.interact();
   }
 
-  interact(handlers = this.options['handlers']) {
+  interact(handlers = this.options.handlers) {
     const handleDragStart = function(event) {
       event.dataTransfer.setData('text', this.id);
     };
@@ -201,7 +193,7 @@ export class Powerade {
       const dragged_element = document.getElementById(dragged_id);
       this.classList.remove('drag-enter');
       if (dragged_element.parentNode === this) { return; }
-      handlers['drop'](event.target, dragged_element);
+      handlers.drop(event.target, dragged_element);
       dragged_element.parentNode.removeChild(dragged_element);
       this.appendChild(dragged_element);
     };
@@ -218,11 +210,11 @@ export class Powerade {
 
   dropzone_classes_for(row, column) {
     const classes = [];
-    if (this.options['border'].includes('bottom') &&
+    if (this.options.border.includes('bottom') &&
         (row === this.grid_attribute_for('x', 'first'))) {
       classes.push('extra-bottom');
     }
-    if (this.options['border'].includes('left') &&
+    if (this.options.border.includes('left') &&
         (column === this.grid_attribute_for('y', 'first'))) {
       classes.push('extra-left');
     }
@@ -247,11 +239,11 @@ export class Powerade {
         classes.push('axis-left'); break;
       }
     }
-    if (this.options['border'].includes('top') &&
+    if (this.options.border.includes('top') &&
         (row === this.grid_attribute_for('x', 'last'))) {
       classes.push('extra-top');
     }
-    if (this.options['border'].includes('right') &&
+    if (this.options.border.includes('right') &&
         (column === this.grid_attribute_for('y', 'last'))) {
       classes.push('extra-right');
     }
@@ -261,26 +253,26 @@ export class Powerade {
   grid_attribute_for(axis, attribute) {
     const grid = {
       x: {
-        size: (this.options['border'].includes('left') ? 1 : 0) +
+        size: (this.options.border.includes('left') ? 1 : 0) +
           this.axis_attribute_for('x', 'cardinality') +
-          (this.options['border'].includes('right') ? 1 : 0),
-        first: this.options['border'].includes('left') ? 0 : 1,
+          (this.options.border.includes('right') ? 1 : 0),
+        first: this.options.border.includes('left') ? 0 : 1,
         last: this.axis_attribute_for('x', 'cardinality') +
-          (this.options['border'].includes('right') ? 1 : 0)
+          (this.options.border.includes('right') ? 1 : 0)
       },
       y: {
-        size: (this.options['border'].includes('top') ? 1 : 0) +
+        size: (this.options.border.includes('top') ? 1 : 0) +
           this.axis_attribute_for('y', 'cardinality') +
-          (this.options['border'].includes('bottom') ? 1 : 0),
-        first: this.options['border'].includes('bottom') ? 0 : 1,
+          (this.options.border.includes('bottom') ? 1 : 0),
+        first: this.options.border.includes('bottom') ? 0 : 1,
         last: this.axis_attribute_for('y', 'cardinality') +
-          (this.options['border'].includes('top') ? 1 : 0)
+          (this.options.border.includes('top') ? 1 : 0)
       }
     };
     return grid[axis][attribute];
   }
 
   axis_attribute_for(axis, attribute) {
-    return this.options['dimensions'][axis][attribute];
+    return this.options.dimensions[axis][attribute];
   }
 }
