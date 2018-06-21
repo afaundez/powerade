@@ -8,7 +8,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-
+import { style } from './style.js'
 const DEFAULT_OPTIONS = {
  dimensions: {
    x: { cardinality: 4, label: 'x-dimension'},
@@ -134,6 +134,9 @@ export class Powerade {
       outside_dropzone.setAttribute('id', 'powerade-outside');
       outside_dropzone.classList.add('powerade');
       outside_dropzone.setAttribute('data-drop-target', true);
+      const stylesheet = document.createElement('style');
+      stylesheet.append(style);
+      target.appendChild(stylesheet);
       target.appendChild(outside_dropzone);
       target.appendChild(table);
     }
