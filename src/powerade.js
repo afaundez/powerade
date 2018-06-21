@@ -37,19 +37,18 @@ export class Powerade {
   constructor(target, elements, options) {
     this.target = target;
     this.elements = elements;
-    Object.deep_extend = function(destination, source) {
-      for (let property in source) {
-        if (source[property] && source[property].constructor &&
-            (source[property].constructor === Object)) {
-          destination[property] = destination[property] || {};
-          arguments.callee(destination[property], source[property]);
-        } else {
-          destination[property] = source[property];
-        }
+    const merge = (target, source) => {
+      // Iterate through `source` properties and if an `Object` set property to merge of `target` and `source` properties
+      for (let key of Object.keys(source)) {
+        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]))
       }
-      return destination;
-    };
-    this.options = Object.deep_extend(Powerade.DEFAULT_OPTIONS, options);
+
+      // Join `target` and modified `source`
+      if (source instanceof Array) { target = source }
+      else { Object.assign(target || {}, source) }
+      return target
+    }
+    this.options = merge(Powerade.DEFAULT_OPTIONS, options);
   }
 
   clean(target = this.target) {
