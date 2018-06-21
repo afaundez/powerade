@@ -1,139 +1,197 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS104: Avoid inline assignments
+ * DS202: Simplify dynamic range loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+
+const DEFAULT_OPTIONS = {
+ dimensions: {
+   x: { cardinality: 4, label: 'x-dimension'},
+   y: { cardinality: 4, label: 'x-dimension'},
+   z: { cardinality: 4, label: 'y-dimension'}
+ },
+ border: ['left', 'bottom', 'top', 'right'],
+ display: {
+   label: true,
+   avatar: true,
+   missing_avatar: 'https://upload.wikimedia.org' +
+     '/wikipedia/commons/2/2a/Flag_of_None.svg'
+ },
+ dataset: {},
+ handlers: {
+   drop(dropzone, dragged) {}
+ }
+};
+
 export class Powerade {
+
+  static get DEFAULT_OPTIONS(){
+    return DEFAULT_OPTIONS
+  }
 
   constructor(target, elements, options) {
     this.target = target;
     this.elements = elements;
-    this.options = options;
-    this.parse();
-    this.clean();
-    this.build();
-    this.load();
-    this.interact(this.options['handlers']);
-  }
-
-  parse(options) {
-    this.cardinality = {
-      x: this.options['cardinality']['x'],
-      y: this.options['cardinality']['y'],
-      z: this.options['cardinality']['z']
-    };
-    return this.grid = {
-      size: {
-        x: (this.options['border'].includes('left') ? 1 : 0) + this.cardinality['x'] + (this.options['border'].includes('right') ? 1 : 0),
-        y: (this.options['border'].includes('top') ? 1 : 0) + this.cardinality['y'] + (this.options['border'].includes('bottom') ? 1 : 0)
-      },
-      first: {
-        x: (this.options['border'].includes('left') ? 0 : 1),
-        y: (this.options['border'].includes('bottom') ? 0 : 1)
-      },
-      last: {
-        x: this.cardinality['x'] + (this.options['border'].includes('right') ? 1 : 0),
-        y: this.cardinality['y'] + (this.options['border'].includes('top') ? 1 : 0)
-      },
-      dimensions: {
-        x: this.options['dimensions']['x'],
-        y: this.options['dimensions']['y'],
-        z: this.options['dimensions']['z']
-      }
-    };
-  }
-
-  clean() {
-    if (this.target != null) {
-      return (() => {
-        const result = [];
-        while (this.target.firstChild) {
-          result.push(this.target.firstChild.remove());
+    Object.deep_extend = function(destination, source) {
+      for (let property in source) {
+        if (source[property] && source[property].constructor &&
+            (source[property].constructor === Object)) {
+          destination[property] = destination[property] || {};
+          arguments.callee(destination[property], source[property]);
+        } else {
+          destination[property] = source[property];
         }
-        return result;
-      })();
-    }
+      }
+      return destination;
+    };
+    this.options = Object.deep_extend(Powerade.DEFAULT_OPTIONS, options);
   }
 
-  build() {
-    if (this.target != null) {
-      let column, td;
+  clean(target = this.target) {
+    if (target != null) { return ((() => {
+      const result = [];
+      while (target.firstChild) {
+        result.push(target.firstChild.remove());
+      }
+      return result;
+    })()); }
+  }
+
+  build(target = this.target) {
+    if (target != null) {
+      let column, dropzone, dropzone_id, row;
       let asc1, end1;
-      let th = document.createElement('th');
-      th.setAttribute('colspan', this.cardinality['x']);
-      th.setAttribute('id', 'dimension-y');
-      th.setAttribute('class', 'y-label');
-      th.append('y-axis');
-      let tr = document.createElement('tr');
-      tr.appendChild(document.createElement('th'));
-      tr.appendChild(th);
+      let asc2, end2;
+      const y_header = document.createElement('th');
+      y_header.setAttribute('colspan', this.axis_attribute_for('x', 'cardinality'));
+      y_header.setAttribute('id', 'dimension-y');
+      y_header.setAttribute('class', 'y-label');
+      y_header.append('y-axis');
+      const y_header_row = document.createElement('tr');
+      y_header_row.appendChild(document.createElement('th'));
+      y_header_row.appendChild(y_header);
       const thead = document.createElement('thead');
-      thead.appendChild(tr);
+      thead.appendChild(y_header_row);
       const tbody = document.createElement('tbody');
       const table = document.createElement('table');
       table.setAttribute('id', 'powerade-view');
       table.classList.add('powerade');
       table.appendChild(thead);
+      const first_column = this.grid_attribute_for('y', 'first');
+      const last_column = this.grid_attribute_for('y', 'last');
       if (this.options['border'].includes('top')) {
         let asc, end;
-        tr = document.createElement('tr');
-        for (column = this.grid['first']['y'], end = this.grid['last']['y'], asc = this.grid['first']['y'] <= end; asc ? column <= end : column >= end; asc ? column++ : column--) {
-          td = document.createElement('td');
-          td.setAttribute('id', `i-${this.grid['last']['x']}-${column}`);
-          td.setAttribute('class', this.cell_type_for(this.grid['last']['x'], column).join(' '));
-          td.setAttribute('data-drop-target', true);
-          tr.appendChild(td);
+        const extra_top_row = document.createElement('tr');
+        for (column = first_column, end = last_column, asc = first_column <= end; asc ? column <= end : column >= end; asc ? column++ : column--) {
+          dropzone = document.createElement('td');
+          dropzone_id = `i-${this.grid_attribute_for('x', 'last')}-${column}`;
+          dropzone.setAttribute('id', dropzone_id);
+          row = this.grid_attribute_for('x', 'last');
+          dropzone.setAttribute('class', this.dropzone_classes_for(row, column));
+          dropzone.setAttribute('data-drop-target', true);
+          extra_top_row.appendChild(dropzone);
         }
-        tbody.appendChild(tr);
+        tbody.appendChild(extra_top_row);
       }
-      tr = document.createElement('tr');
-      for (column = this.grid['first']['y'], end1 = this.grid['last']['y'], asc1 = this.grid['first']['y'] <= end1; asc1 ? column <= end1 : column >= end1; asc1 ? column++ : column--) {
-        td = document.createElement('td');
-        td.setAttribute('id', `i-${this.cardinality['x']}-${column}`);
-        td.setAttribute('class', this.cell_type_for(this.cardinality['x'], column).join(' '));
-        td.setAttribute('data-drop-target', true);
-        tr.appendChild(td);
+      const x_header_row = document.createElement('tr');
+      for (column = first_column, end1 = last_column, asc1 = first_column <= end1; asc1 ? column <= end1 : column >= end1; asc1 ? column++ : column--) {
+        dropzone = document.createElement('td');
+        dropzone_id = `i-${this.axis_attribute_for('x', 'cardinality')}-${column}`;
+        dropzone.setAttribute('id', dropzone_id);
+        row = this.axis_attribute_for('x', 'cardinality');
+        dropzone.setAttribute('class', this.dropzone_classes_for(row, column));
+        dropzone.setAttribute('data-drop-target', true);
+        x_header_row.appendChild(dropzone);
       }
-      th = document.createElement('th');
-      th.setAttribute('rowspan', this.cardinality['y']);
-      th.setAttribute('id', 'dimension-x');
-      th.setAttribute('class', 'center-align');
-      th.append('x-axis');
-      tr.appendChild(th);
-      tbody.appendChild(tr);
-      for (let row = 1, end2 = this.cardinality['x'], asc2 = 1 <= end2; asc2 ? row <= end2 : row >= end2; asc2 ? row++ : row--) {
+      const x_header = document.createElement('th');
+      x_header.setAttribute('rowspan', this.axis_attribute_for('y', 'cardinality'));
+      x_header.setAttribute('id', 'dimension-x');
+      x_header.setAttribute('class', 'center-align');
+      x_header.append('x-axis');
+      x_header_row.appendChild(x_header);
+      tbody.appendChild(x_header_row);
+      for (row = 1, end2 = this.axis_attribute_for('x', 'cardinality'), asc2 = 1 <= end2; asc2 ? row <= end2 : row >= end2; asc2 ? row++ : row--) {
         var asc3, end3;
-        tr = document.createElement('tr');
-        for (column = this.grid['first']['y'], end3 = this.grid['last']['y'], asc3 = this.grid['first']['y'] <= end3; asc3 ? column <= end3 : column >= end3; asc3 ? column++ : column--) {
-          td = document.createElement('td');
-          td.setAttribute('id', `i-${this.cardinality['x'] - row}-${column}`);
-          td.setAttribute('class', this.cell_type_for(this.cardinality['x'] - row, column).join(' '));
-          td.setAttribute('data-drop-target', true);
-          tr.appendChild(td);
+        const non_first_row = document.createElement('tr');
+        for (column = first_column, end3 = last_column, asc3 = first_column <= end3; asc3 ? column <= end3 : column >= end3; asc3 ? column++ : column--) {
+          dropzone = document.createElement('td');
+          const current_row = this.axis_attribute_for('x', 'cardinality') - row;
+          dropzone_id = `i-${current_row}-${column}`;
+          dropzone.setAttribute('id', dropzone_id);
+          const dropzone_classes = this.dropzone_classes_for(current_row, column);
+          dropzone.setAttribute('class', dropzone_classes);
+          dropzone.setAttribute('data-drop-target', true);
+          non_first_row.appendChild(dropzone);
         }
-        tbody.appendChild(tr);
+        tbody.appendChild(non_first_row);
       }
       table.appendChild(tbody);
-      const outside = document.createElement('div');
-      outside.setAttribute('id', 'powerade-outside');
-      outside.classList.add('powerade');
-      outside.setAttribute('data-drop-target', true);
-      this.target.appendChild(outside);
-      this.target.appendChild(table);
+      const outside_dropzone = document.createElement('div');
+      outside_dropzone.setAttribute('id', 'powerade-outside');
+      outside_dropzone.classList.add('powerade');
+      outside_dropzone.setAttribute('data-drop-target', true);
+      target.appendChild(outside_dropzone);
+      target.appendChild(table);
     }
   }
 
-  interact(handlers) {
-    const draggables = this.target.querySelectorAll('[draggable]');
-    const targets = this.target.querySelectorAll('[data-drop-target]');
+  load(target = this.target, elements = this.elements, options = this.options) {
+    let dimension_label;
+    const view = target.querySelector('table#powerade-view');
+    const outside_dropzone = target.querySelector("#powerade-outside");
+    for (let attribute in options['dataset']) {
+      const value = options['dataset'][attribute];
+      view.setAttribute(`data-${attribute}`, value);
+    }
+    for (let axis of ['x', 'y']) {
+      dimension_label = this.axis_attribute_for(axis, 'label');
+      view.setAttribute(`data-dimension-${axis}`, dimension_label);
+      const header = view.querySelector(`th#dimension-${axis}`);
+      header.textContent = dimension_label;
+    }
+    for (var element of elements) {
+      var left;
+      const [x_value, y_value, z_value] = ['x', 'y', 'z'].map((function(axis) {
+        const values = element['values'];
+        dimension_label = this.axis_attribute_for(axis, 'label');
+        return values[dimension_label] || 'unknown';
+        }), this);
+      const dropzone_id = ['i', x_value, y_value].join('-');
+      const dropzone = (left = view.querySelector(`td#${dropzone_id}`)) != null ? left : outside_dropzone;
+      const draggable = document.createElement('div');
+      draggable.setAttribute('id', element['id']);
+      draggable.setAttribute('draggable', true);
+      draggable.setAttribute('class', `item z-gradient-${z_value}`);
+      if (this.options['display']['avatar'] && (element['avatar'] != null)) {
+        const draggable_avatar = document.createElement('img');
+        draggable_avatar.setAttribute('src', element['avatar']);
+        const missing_avatar = this.options['display']['missing_avatar'];
+        draggable_avatar.setAttribute('onerror', `this.src='${missing_avatar}'`);
+        draggable.appendChild(draggable_avatar);
+      }
+      const draggable_label = document.createElement('span');
+      draggable_label.append(element['label']);
+      if (this.options['display']['label']) { draggable.appendChild(draggable_label); }
+      dropzone.appendChild(draggable);
+    }
+    this.interact();
+  }
 
+  interact(handlers = this.options['handlers']) {
     const handleDragStart = function(event) {
       event.dataTransfer.setData('text', this.id);
     };
-
     const handleDragEnterLeave = function(event) {
-      if (event.type === 'dragenter') {
-        return this.classList.add('drag-enter');
-      } else {
-        return this.classList.remove('drag-enter');
+      switch (event.type) {
+        case 'dragenter': this.classList.add('drag-enter'); break;
+        default: this.classList.remove('drag-enter');
       }
     };
-
     const handleOverDrop = function(event) {
       event.preventDefault();
       if (event.type !== 'drop') { return; }
@@ -145,96 +203,82 @@ export class Powerade {
       dragged_element.parentNode.removeChild(dragged_element);
       this.appendChild(dragged_element);
     };
-
-    for (let draggable of draggables) {
+    for (let draggable of this.target.querySelectorAll('[draggable]')) {
       draggable.addEventListener('dragstart', handleDragStart);
     }
-
-    for (let target of targets) {
-      target.addEventListener('dragover', handleOverDrop);
-      target.addEventListener('drop', handleOverDrop);
-      target.addEventListener('dragenter', handleDragEnterLeave);
-      target.addEventListener('dragleave', handleDragEnterLeave);
+    for (let dropzone of this.target.querySelectorAll('[data-drop-target]')) {
+      dropzone.addEventListener('dragover', handleOverDrop);
+      dropzone.addEventListener('drop', handleOverDrop);
+      dropzone.addEventListener('dragenter', handleDragEnterLeave);
+      dropzone.addEventListener('dragleave', handleDragEnterLeave);
     }
   }
 
-  load() {
-    const view = this.target.querySelector('table#powerade-view');
-    for (let attribute in this.options['dataset']) {
-      const value = this.options['dataset'][attribute];
-      view.setAttribute(`data-${attribute}`, value);
-    }
-    const grid_dimensions = this.grid['dimensions'];
-    for (var dimension of ['x', 'y']) {
-      const dimension_label = grid_dimensions[dimension];
-      view.setAttribute(`data-dimension-${dimension}`, dimension_label);
-      const header = view.querySelector(`th#dimension-${dimension}`);
-      header.textContent = dimension_label;
-    }
-    for (var element of this.elements) {
-      const [x_value, y_value, z_value] = ['x', 'y', 'z'].map(function(generic_dimension) {
-        const values = element['values'];
-        dimension = grid_dimensions[generic_dimension];
-        return values[dimension] || 'unknown';
-      });
-      const dropzone_id = ['i', x_value, y_value].join('-');
-      let dropzone = this.target.querySelector(`td#${dropzone_id}`);
-      if (dropzone == null) { dropzone = this.target.querySelector("#powerade-outside"); }
-      const draggable = document.createElement('div');
-      draggable.setAttribute('id', element['id']);
-      draggable.setAttribute('draggable', true);
-      draggable.setAttribute('class', `item z-gradient-${z_value}`);
-      if (element['avatar'] != null) {
-        const draggable_avatar = document.createElement('img');
-        draggable_avatar.setAttribute('src', element['avatar']);
-        draggable_avatar.setAttribute('onerror', "this.src='https://upload.wikimedia.org/wikipedia/commons/2/2a/Flag_of_None.svg'");
-        draggable.appendChild(draggable_avatar);
-      }
-      const draggable_label = document.createElement('span');
-      draggable_label.append(element['label']);
-      if (!this.options['only-avatar']) { draggable.appendChild(draggable_label); }
-      dropzone.appendChild(draggable);
-    }
-  }
-
-  cell_type_for(x, y) {
+  dropzone_classes_for(row, column) {
     const classes = [];
-    if (this.options['border'].includes('bottom') && (x === this.grid['first']['x'])) {
-        classes.push('extra-bottom');
-      }
-    if (this.options['border'].includes('left') && (y === this.grid['first']['y'])) {
-        classes.push('extra-left');
-      }
-    if ((__range__(1, this.cardinality['x'], true)).includes(x) && (__range__(1, this.cardinality['y'], true)).includes(y)) {
-      switch (x) {
+    if (this.options['border'].includes('bottom') &&
+        (row === this.grid_attribute_for('x', 'first'))) {
+      classes.push('extra-bottom');
+    }
+    if (this.options['border'].includes('left') &&
+        (column === this.grid_attribute_for('y', 'first'))) {
+      classes.push('extra-left');
+    }
+    if ((1 <= row && row <= this.axis_attribute_for('x', 'cardinality')) &&
+        (1 <= column && column <= this.axis_attribute_for('y', 'cardinality'))) {
+      switch (row) {
         case 1: classes.push('border-bottom'); break;
-        case this.cardinality['x']: classes.push('border-top'); break;
-        case this.cardinality['x'] / 2: classes.push('axis-top'); break;
-        case (this.cardinality['x'] / 2) + 1: classes.push('axis-bottom'); break;
+        case this.axis_attribute_for('x', 'cardinality'):
+        classes.push('border-top'); break;
+        case this.axis_attribute_for('x', 'cardinality') / 2:
+        classes.push('axis-top'); break;
+        case (this.axis_attribute_for('x', 'cardinality') / 2) + 1:
+        classes.push('axis-bottom'); break;
       }
-      switch (y) {
+      switch (column) {
         case 1: classes.push('border-left'); break;
-        case this.cardinality['y']: classes.push('border-right'); break;
-        case this.cardinality['y'] / 2: classes.push('axis-right'); break;
-        case (this.cardinality['y'] / 2) + 1: classes.push('axis-left'); break;
+        case this.axis_attribute_for('y', 'cardinality'):
+        classes.push('border-right'); break;
+        case this.axis_attribute_for('y', 'cardinality') / 2:
+        classes.push('axis-right'); break;
+        case (this.axis_attribute_for('y', 'cardinality') / 2) + 1:
+        classes.push('axis-left'); break;
       }
     }
-    if (this.options['border'].includes('top') && (x === this.grid['last']['x'])) {
+    if (this.options['border'].includes('top') &&
+        (row === this.grid_attribute_for('x', 'last'))) {
       classes.push('extra-top');
     }
-    if (this.options['border'].includes('right') && (y === this.grid['last']['y'])) {
+    if (this.options['border'].includes('right') &&
+        (column === this.grid_attribute_for('y', 'last'))) {
       classes.push('extra-right');
     }
-    return classes;
+    return classes.join(' ');
   }
-};
 
-function __range__(left, right, inclusive) {
-  let range = [];
-  let ascending = left < right;
-  let end = !inclusive ? right : ascending ? right + 1 : right - 1;
-  for (let i = left; ascending ? i < end : i > end; ascending ? i++ : i--) {
-    range.push(i);
+  grid_attribute_for(axis, attribute) {
+    const grid = {
+      x: {
+        size: (this.options['border'].includes('left') ? 1 : 0) +
+          this.axis_attribute_for('x', 'cardinality') +
+          (this.options['border'].includes('right') ? 1 : 0),
+        first: this.options['border'].includes('left') ? 0 : 1,
+        last: this.axis_attribute_for('x', 'cardinality') +
+          (this.options['border'].includes('right') ? 1 : 0)
+      },
+      y: {
+        size: (this.options['border'].includes('top') ? 1 : 0) +
+          this.axis_attribute_for('y', 'cardinality') +
+          (this.options['border'].includes('bottom') ? 1 : 0),
+        first: this.options['border'].includes('bottom') ? 0 : 1,
+        last: this.axis_attribute_for('y', 'cardinality') +
+          (this.options['border'].includes('top') ? 1 : 0)
+      }
+    };
+    return grid[axis][attribute];
   }
-  return range;
+
+  axis_attribute_for(axis, attribute) {
+    return this.options['dimensions'][axis][attribute];
+  }
 }
