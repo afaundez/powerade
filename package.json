@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "stakeholder visualization",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "jshint src test",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
