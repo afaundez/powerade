@@ -1,3 +1,4 @@
+import { style } from './powerade.scss';
 import { Powerade } from './powerade.js';
 
 export function init(target, elements, options = {}) {

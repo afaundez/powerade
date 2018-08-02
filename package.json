@@ -17,12 +17,20 @@
     "url": "https://github.com/afaundez/powerade/issues"
   },
   "homepage": "https://github.com/afaundez/powerade#readme",
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "identity-obj-proxy"
+    }
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
     "jest": "^23.1.0",
     "jshint": "^2.9.5",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.21.0",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8"
   }

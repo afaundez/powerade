@@ -1,0 +1,127 @@
+.powerade {
+  border-collapse: collapse;
+  border-spacing: 0;
+  caption, tbody, tfoot, thead, tr, th, td, div, span {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: middle;
+  }
+  tr {
+    border: none;
+    td {
+      &.border-top {
+        border-top-color: #928087;
+        border-top-style: solid;
+        border-top-width: 4px;
+      }
+      &.axis-top {
+        border-top-color: #9e1e4c;
+        border-top-style: solid;
+        border-top-width: 2px;
+      }
+      &.border-right {
+        border-right-color: #928087;
+        border-right-style: solid;
+        border-right-width: 4px;
+      }
+      &.axis-right {
+        border-right-color: #9e1e4c;
+        border-right-style: solid;
+        border-right-width: 2px;
+      }
+      &.border-bottom {
+        border-bottom-color: #928087;
+        border-bottom-style: solid;
+        border-bottom-width: 4px;
+      }
+      &.axis-bottom {
+        border-bottom-color: #9e1e4c;
+        border-bottom-style: solid;
+        border-bottom-width: 2px;
+      }
+      &.border-left {
+        border-left-color: #928087;
+        border-left-style: solid;
+        border-left-width: 4px;
+      }
+      &.axis-left {
+        border-left-color: #9e1e4c;
+        border-left-style: solid;
+        border-left-width: 2px;
+      }
+      &[class*=extra] {
+        border-color: #ce8ea5;
+        background-color: #ececec;
+      }
+    }
+    th.y-label {
+      text-align: center;
+    }
+  }
+  .z-gradient-0 {
+    background-color: #cf3027;
+    color: white;
+  }
+  .z-gradient-1 {
+    background-color: #f58220;
+    color: white;
+  }
+  .z-gradient-2 {
+    background-color: #feda00;
+    color: white;
+  }
+  .z-gradient-3 {
+    background-color: #90c73e;
+    color: white;
+  }
+  .z-gradient-4 {
+    background-color: #11a249;
+    color: white;
+  }
+  .z-gradient-unknown {
+    background-color: gray;
+    color: white;
+  }
+  .item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1px 1px;
+    height: 32px;
+    font-size: 13px;
+    border-radius: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    img {
+      border-radius: 8px;
+      float: left;
+      height: 32px;
+      width: 32px;
+    }
+    span {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+  [data-drop-target] {
+    text-align: center;
+    background-color: #f1f1f1;
+    border: dashed 1px #9e1e4c;
+    border-radius: 2px;
+    margin: 10px auto 30px;
+    padding: 1px;
+    height: 150px;
+    width: 150px;
+    transition: background-color 0.3s;
+  }
+  [draggable] {
+    transition: background-color 0.3s;
+  }
+  .drag-enter {
+    background-color: #9e1e4c;
+    border-color: #9e1e4c;
+    border-style: solid;
+  }
+}
