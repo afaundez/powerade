@@ -1,7 +1,20 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 module.exports = {
+  entry: {
+    main: './src/index.js',
+    example: './src/example.js'
+  },
   output: {
     library: 'Powerade'
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Powerade',
+      filename: 'index.html',
+      template: 'src/index.html'
+    })
+  ],
   module: {
     rules: [
       {
