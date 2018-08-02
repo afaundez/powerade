@@ -1,4 +1,4 @@
-const Powerade = require('../src/index');
+const Powerade = require('../src/main');
 let target = document.createElement('div');
 
 test('executes Powerade.init', () => {
