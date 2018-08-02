@@ -3,8 +3,8 @@ import { style } from './style.js';
 const DEFAULT_OPTIONS = {
  dimensions: {
    x: { cardinality: 4, label: 'x-dimension'},
-   y: { cardinality: 4, label: 'x-dimension'},
-   z: { cardinality: 4, label: 'y-dimension'}
+   y: { cardinality: 4, label: 'y-dimension'},
+   z: { cardinality: 4, label: 'z-dimension'}
  },
  border: ['left', 'bottom', 'top', 'right'],
  display: {
