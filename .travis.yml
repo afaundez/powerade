@@ -4,6 +4,6 @@ node_js:
 install:
   - yarn
 before_script:
-  - yarn jshint src test && yarn jest
+  - yarn lint && yarn jest
 script:
   - yarn webpack

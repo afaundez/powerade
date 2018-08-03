@@ -145,7 +145,7 @@ export class Powerade {
     const mapAxis = function (axis) {
       const values = element.values;
       dimension_label = this.axis_attribute_for(axis, 'label');
-      const value = values[dimension_label]
+      const value = values[dimension_label];
       return typeof(value) == 'number' ? value : 'unknown';
     };
     for (var [i, element] of elements.entries()) {
