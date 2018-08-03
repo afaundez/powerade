@@ -1,3 +1,15 @@
+$default-border-style: solid;
+$default-border-width: 4px;
+$default-axis-width: 2px;
+$z-gradient-list: (
+  (0, whitesmoke, black),
+  (1, lightgray, black),
+  (2, darkgray, black),
+  (3, gray, white),
+  (4, dimgray, white),
+  (5, black, white),
+  ('unknown', white, gray)
+);
 .powerade {
   border-collapse: collapse;
   border-spacing: 0;
@@ -11,77 +23,49 @@
     border: none;
     td {
       &.border-top {
-        border-top-color: #928087;
-        border-top-style: solid;
-        border-top-width: 4px;
+        border-top-style: $default-border-style;
+        border-top-width: $default-border-width;
       }
       &.axis-top {
-        border-top-color: #9e1e4c;
-        border-top-style: solid;
-        border-top-width: 2px;
+        border-top-style: $default-border-style;
+        border-top-width: $default-axis-width;
       }
       &.border-right {
-        border-right-color: #928087;
-        border-right-style: solid;
-        border-right-width: 4px;
+        border-right-style: $default-border-style;
+        border-right-width: $default-border-width;
       }
       &.axis-right {
-        border-right-color: #9e1e4c;
-        border-right-style: solid;
-        border-right-width: 2px;
+        border-right-style: $default-border-style;
+        border-right-width: $default-axis-width;
       }
       &.border-bottom {
-        border-bottom-color: #928087;
-        border-bottom-style: solid;
-        border-bottom-width: 4px;
+        border-bottom-style: $default-border-style;
+        border-bottom-width: $default-border-width;
       }
       &.axis-bottom {
-        border-bottom-color: #9e1e4c;
-        border-bottom-style: solid;
-        border-bottom-width: 2px;
+        border-bottom-style: $default-border-style;
+        border-bottom-width: $default-axis-width;
       }
       &.border-left {
-        border-left-color: #928087;
-        border-left-style: solid;
-        border-left-width: 4px;
+        border-left-style: $default-border-style;
+        border-left-width: $default-border-width;
       }
       &.axis-left {
-        border-left-color: #9e1e4c;
-        border-left-style: solid;
-        border-left-width: 2px;
+        border-left-style: $default-border-style;
+        border-left-width: $default-axis-width;
       }
       &[class*=extra] {
-        border-color: #ce8ea5;
-        background-color: #ececec;
       }
     }
     th.y-label {
       text-align: center;
     }
   }
-  .z-gradient-0 {
-    background-color: #cf3027;
-    color: white;
-  }
-  .z-gradient-1 {
-    background-color: #f58220;
-    color: white;
-  }
-  .z-gradient-2 {
-    background-color: #feda00;
-    color: white;
-  }
-  .z-gradient-3 {
-    background-color: #90c73e;
-    color: white;
-  }
-  .z-gradient-4 {
-    background-color: #11a249;
-    color: white;
-  }
-  .z-gradient-unknown {
-    background-color: gray;
-    color: white;
+  @each $position, $background-color, $color in $z-gradient-list {
+    .z-gradient-#{$position} {
+      background-color: $background-color;
+      color: $color;
+    }
   }
   .item {
     display: inline-flex;
@@ -91,9 +75,7 @@
     height: 32px;
     font-size: 13px;
     border-radius: 8px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    max-width: 100px;
     img {
       border-radius: 8px;
       float: left;
@@ -101,27 +83,31 @@
       width: 32px;
     }
     span {
+      display: block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
       padding-left: 5px;
       padding-right: 5px;
     }
   }
   [data-drop-target] {
     text-align: center;
-    background-color: #f1f1f1;
-    border: dashed 1px #9e1e4c;
+    border: dashed 1px black;
     border-radius: 2px;
     margin: 10px auto 30px;
     padding: 1px;
     height: 150px;
     width: 150px;
+    max-height: 150px;
+    max-width: 150px;
     transition: background-color 0.3s;
   }
   [draggable] {
     transition: background-color 0.3s;
   }
   .drag-enter {
-    background-color: #9e1e4c;
-    border-color: #9e1e4c;
+    background-color: lightgray;
     border-style: solid;
   }
 }

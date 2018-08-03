@@ -7,7 +7,7 @@ const outsideElements = [
 ];
 const insideElements = [...Array(6).keys()].map( position => {
   return {
-    label: `element ${position}`,
+    label: `element ${position**position**position}`,
     values: {
       'x-dimension': position,
       'y-dimension': position,
