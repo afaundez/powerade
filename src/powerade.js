@@ -77,7 +77,7 @@ export class Powerade {
         const extra_top_row = document.createElement('tr');
         for (column = first_column, end = last_column, asc = first_column <= end; asc ? column <= end : column >= end; asc ? column++ : column--) {
           dropzone = document.createElement('td');
-          dropzone_id = `i-${this.grid_attribute_for('x', 'last')}-${column}`;
+          dropzone_id = `pw-dropzone-${this.grid_attribute_for('x', 'last')}-${column}`;
           dropzone.setAttribute('id', dropzone_id);
           row = this.grid_attribute_for('x', 'last');
           dropzone.setAttribute('class', this.dropzone_classes_for(row, column));
@@ -89,7 +89,7 @@ export class Powerade {
       const x_header_row = document.createElement('tr');
       for (column = first_column, end1 = last_column, asc1 = first_column <= end1; asc1 ? column <= end1 : column >= end1; asc1 ? column++ : column--) {
         dropzone = document.createElement('td');
-        dropzone_id = `i-${this.axis_attribute_for('x', 'cardinality')}-${column}`;
+        dropzone_id = `pw-dropzone-${this.axis_attribute_for('x', 'cardinality')}-${column}`;
         dropzone.setAttribute('id', dropzone_id);
         row = this.axis_attribute_for('x', 'cardinality');
         dropzone.setAttribute('class', this.dropzone_classes_for(row, column));
@@ -109,7 +109,7 @@ export class Powerade {
         for (column = first_column, end3 = last_column, asc3 = first_column <= end3; asc3 ? column <= end3 : column >= end3; asc3 ? column++ : column--) {
           dropzone = document.createElement('td');
           const current_row = this.axis_attribute_for('x', 'cardinality') - row;
-          dropzone_id = `i-${current_row}-${column}`;
+          dropzone_id = `pw-dropzone-${current_row}-${column}`;
           dropzone.setAttribute('id', dropzone_id);
           const dropzone_classes = this.dropzone_classes_for(current_row, column);
           dropzone.setAttribute('class', dropzone_classes);
@@ -120,7 +120,7 @@ export class Powerade {
       }
       table.appendChild(tbody);
       const outside_dropzone = document.createElement('div');
-      outside_dropzone.setAttribute('id', 'powerade-outside');
+      outside_dropzone.setAttribute('id', 'pw-dropzone-outside');
       outside_dropzone.classList.add('powerade');
       outside_dropzone.setAttribute('data-drop-target', true);
       target.appendChild(outside_dropzone);
@@ -131,7 +131,7 @@ export class Powerade {
   load(target = this.target, elements = this.elements, options = this.options) {
     let dimension_label;
     const view = target.querySelector('table#powerade-view');
-    const outside_dropzone = target.querySelector("#powerade-outside");
+    const outside_dropzone = target.querySelector("#pw-dropzone-outside");
     for (let attribute in options.dataset) {
       const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
@@ -150,7 +150,7 @@ export class Powerade {
     };
     for (var [i, element] of elements.entries()) {
       const [x_value, y_value, z_value] = ['x', 'y', 'z'].map(mapAxis, this);
-      const dropzone_id = ['i', x_value, y_value].join('-');
+      const dropzone_id = ['pw-dropzone', x_value, y_value].join('-');
       let left;
       const dropzone = (left = view.querySelector(`td#${dropzone_id}`)) != null ? left : outside_dropzone;
       const draggable = document.createElement('div');
