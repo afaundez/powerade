@@ -148,13 +148,13 @@ export class Powerade {
       const value = values[dimension_label]
       return typeof(value) == 'number' ? value : 'unknown';
     };
-    for (var element of elements) {
+    for (var [i, element] of elements.entries()) {
       const [x_value, y_value, z_value] = ['x', 'y', 'z'].map(mapAxis, this);
       const dropzone_id = ['i', x_value, y_value].join('-');
       let left;
       const dropzone = (left = view.querySelector(`td#${dropzone_id}`)) != null ? left : outside_dropzone;
       const draggable = document.createElement('div');
-      draggable.setAttribute('id', element.id);
+      draggable.setAttribute('id', element.id || `pw-draggable-${i}`);
       draggable.setAttribute('draggable', true);
       draggable.setAttribute('class', `item z-gradient-${z_value}`);
       if (this.options.display.avatar && (element.avatar != null)) {
