@@ -1,20 +1,23 @@
-let target = document.querySelector('#powerade');
-const outsideElements = [
-  {
-    label: 'element out',
-    values: {'x-dimension': '', 'y-dimension': '', 'z-dimension': ''}
-  }
-];
-const insideElements = [...Array(6).keys()].map( position => {
+const users = require('./users.json').results;
+const target = document.querySelector('#powerade');
+const elements = users.map(user => {
   return {
-    label: `element ${position}`,
+    label: user.name.first,
     values: {
-      'x-dimension': position,
-      'y-dimension': position,
-      'z-dimension': position
-    }
+      'x-dimension': user.name.first.length % 6,
+      'y-dimension': user.name.last.length % 6,
+      'z-dimension': user.email.length % 6
+    },
+    avatar: user.picture.thumbnail
   };
 });
-const elements = [...outsideElements, ...insideElements];
-let options = {};
-let powerade = Powerade.init(target, elements, options);
+elements[0].values = {'x-dimension': '', 'y-dimension': '', 'z-dimension': ''};
+elements[1].values['x-dimension'] = '';
+elements[2].values['y-dimension'] = '';
+elements[3].values['z-dimension'] = '';
+const options = {
+  display: {
+    label: true
+  }
+};
+const powerade = Powerade.init(target, elements, options);
