@@ -1,5 +1,5 @@
-import { style } from './powerade.scss';
-import { Powerade } from './powerade.js';
+import { style } from './styles/powerade.scss';
+import { Powerade } from './scripts/powerade.js';
 
 export function init(target, elements, options = {}) {
   if (!target) { return; }

@@ -2,6 +2,18 @@
 
 Stakeholder visualization.
 
-## Build
+## Develop
 
-Use webpack.
+### Run
+
+```sh
+yarn watch
+```
+Check `dist/example.html`.
+
+### Test
+
+```sh
+yarn lint
+yarn test
+```

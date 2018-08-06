@@ -1,6 +1,5 @@
-const users = require('./users.json').results;
 const target = document.querySelector('#powerade');
-const elements = users.map(user => {
+const elements = require('./data/users.json').results.map(user => {
   return {
     label: user.name.first,
     values: {
@@ -11,13 +10,11 @@ const elements = users.map(user => {
     avatar: user.picture.thumbnail
   };
 });
-elements[0].values = {'x-dimension': '', 'y-dimension': '', 'z-dimension': ''};
-elements[1].values['x-dimension'] = '';
-elements[2].values['y-dimension'] = '';
-elements[3].values['z-dimension'] = '';
 const options = {
+  style: ['powerade'],
   display: {
-    label: true
+    label: true,
+    avatar: true
   }
 };
 const powerade = Powerade.init(target, elements, options);
