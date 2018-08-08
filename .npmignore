@@ -9,10 +9,13 @@ CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 PULL_REQUEST_TEMPLATE.md
 
-.travis.yml
-.jshintrc
 .babelrc
+.jshintrc
+.npmignore
+.travis.yml
 webpack.config.js
 
 src
 test
+
+*.tgz
