@@ -9,8 +9,8 @@ export const DEFAULTS = {
   display: {
     label: true,
     avatar: true,
-    onerror_avatar: 'https://github.com/identicons/error.png',
-    missing_avatar: 'https://github.com/identicons/powerade.png'
+    onerrorAvatar: 'https://github.com/identicons/error.png',
+    missingAvatar: 'https://github.com/identicons/powerade.png'
   },
   dataset: {},
   handlers: {

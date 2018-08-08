@@ -1,3 +1,4 @@
+/* globals Powerade */
 const target = document.querySelector('#powerade');
 const elements = require('./data/users.json').results.map(user => {
   return {
@@ -17,4 +18,4 @@ const options = {
     avatar: true
   }
 };
-const powerade = Powerade.init(target, elements, options);
+Powerade.init(target, elements, options);
