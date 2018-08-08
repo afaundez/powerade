@@ -1,3 +1,4 @@
+/* exported style */
 import { style } from './styles/powerade.scss';
 import { Powerade } from './scripts/powerade.js';
 
