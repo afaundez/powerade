@@ -42,10 +42,8 @@ export class Powerade {
       yHeader.setAttribute('colspan', this.axis.x.cardinality);
       yHeader.id = 'dimension-y';
       yHeader.classList.add('y-label');
-      yHeader.append('y-axis');
       const outDropzone = document.createElement('td');
-      outDropzone.id = 'pw-dropzone-outside';
-      outDropzone.setAttribute('data-drop-target', '');
+      outDropzone.setAttribute('data-drop-target', 'out');
       outDropzone.setAttribute('colspan', this.grid.x.size);
       const yHeaderRow = document.createElement('tr');
       yHeaderRow.appendChild(document.createElement('th'));
@@ -55,49 +53,41 @@ export class Powerade {
       thead.appendChild(yHeaderRow);
       const tbody = document.createElement('tbody');
       const table = document.createElement('table');
-      table.id = 'powerade-view';
       table.appendChild(thead);
       const firstColumn = this.grid.y.first;
       const lastColumn = this.grid.y.last;
       if (this.options.border.includes('top')) {
         const extraTopRow = document.createElement('tr');
         for (let column = firstColumn; column <= lastColumn; column++) {
-          const dropzone = document.createElement('td');
-          const dropzoneId = `pw-dropzone-${this.grid.x.last}-${column}`;
-          dropzone.id = dropzoneId;
           const row = this.grid.x.last;
+          const dropzone = document.createElement('td');
           dropzone.classList.add(...this.dropzoneClasses(row, column));
-          dropzone.setAttribute('data-drop-target', '');
+          dropzone.setAttribute('data-drop-target', `${row}-${column}`);
           extraTopRow.appendChild(dropzone);
         }
         tbody.appendChild(extraTopRow);
       }
       const xHeaderRow = document.createElement('tr');
       for (let column = firstColumn; column <= lastColumn; column++) {
-        const dropzone = document.createElement('td');
-        const dropzoneId = `pw-dropzone-${this.axis.x.cardinality}-${column}`;
-        dropzone.id = dropzoneId;
         const row = this.axis.x.cardinality;
+        const dropzone = document.createElement('td');
         dropzone.classList.add(...this.dropzoneClasses(row, column));
-        dropzone.setAttribute('data-drop-target', '');
+        dropzone.setAttribute('data-drop-target', `${row}-${column}`);
         xHeaderRow.appendChild(dropzone);
       }
       const xHeader = document.createElement('th');
       xHeader.setAttribute('rowspan', this.axis.y.cardinality);
       xHeader.id = 'dimension-x';
-      xHeader.append('x-axis');
       xHeaderRow.appendChild(xHeader);
       tbody.appendChild(xHeaderRow);
       for (let row = 1; row <= this.axis.x.cardinality; row++) {
         const nonFirstRow = document.createElement('tr');
         for (let column = firstColumn; column <= lastColumn; column++) {
-          const dropzone = document.createElement('td');
           const currentRow = this.axis.x.cardinality - row;
-          const dropzoneId = `pw-dropzone-${currentRow}-${column}`;
-          dropzone.id = dropzoneId;
+          const dropzone = document.createElement('td');
           const dropzoneClasses = this.dropzoneClasses(currentRow, column);
           dropzone.classList.add(...dropzoneClasses);
-          dropzone.setAttribute('data-drop-target', true);
+          dropzone.setAttribute('data-drop-target', `${currentRow}-${column}`);
           nonFirstRow.appendChild(dropzone);
         }
         tbody.appendChild(nonFirstRow);
@@ -109,7 +99,7 @@ export class Powerade {
   }
 
   load(target = this.target, elements = this.elements, options = this.options) {
-    const view = target.querySelector('table#powerade-view');
+    const view = target.querySelector('table');
     for (let attribute in options.dataset) {
       const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
@@ -120,23 +110,26 @@ export class Powerade {
       view.setAttribute(`data-dimension-${axis}`, header.textContent);
     }
     const mapAxis = function (axis) {
-      const value = element.values[this.axis[axis].label];
-      return typeof(value) === 'number' ? value : 'unknown';
+      const value = this.element.values[this.axis[axis].label];
+      return typeof(parseInt(value)) === 'number' ? value : 'unknown';
     };
-    const outDropzone = target.querySelector("#pw-dropzone-outside");
-    for (var [i, element] of elements.entries()) {
-      const [x_value, y_value, z_value] = ['x', 'y', 'z'].map(mapAxis, this);
-      const dropzoneId = ['pw-dropzone', x_value, y_value].join('-');
-      const dropzone = view.querySelector(`td#${dropzoneId}`) || outDropzone;
+    const outDropzone = target.querySelector('[data-drop-target="out"]');
+    for (let [i, element] of elements.entries()) {
+      const [xValue, yValue, zValue] = ['x', 'y', 'z'].map(mapAxis, {
+        element: element,
+        axis: this.axis
+      });
+      const dropzoneSelector = `[data-drop-target="${xValue}-${yValue}"]`;
+      const dropzone = view.querySelector(dropzoneSelector) || outDropzone;
       const draggable = document.createElement('div');
       draggable.id = element.id || `pw-draggable-${i}`;
       draggable.setAttribute('draggable', true);
-      draggable.setAttribute('data-z-gradient', z_value);
+      draggable.setAttribute('data-z-gradient', zValue);
       if (this.options.display.avatar && (element.avatar !== null)) {
         const dragableAvatar = document.createElement('img');
-        const missingAvatar = this.options.display.missing_avatar;
+        const missingAvatar = this.options.display.missingAvatar;
         dragableAvatar.setAttribute('src', element.avatar || missingAvatar);
-        const onerrorAvatar = this.options.display.onerror_avatar;
+        const onerrorAvatar = this.options.display.onerrorAvatar;
         dragableAvatar.setAttribute('onerror', `this.src='${onerrorAvatar}'`);
         draggable.appendChild(dragableAvatar);
       }

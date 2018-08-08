@@ -83,7 +83,11 @@ $z-gradient-list: (
     border-radius: 2px;
     transition: background-color 0.3s;
   }
+  [data-drop-target='out'] {
+    border: none;
+  }
   [draggable] {
+    box-sizing: content-box;
     transition: background-color 0.3s;
     transform: translate(0, 0);
     display: inline-flex;
