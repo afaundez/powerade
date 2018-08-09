@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - NPM ignore .tgz and .npmignore
 - Git ignore .tgz
+- Move contributing and pull request template to .github
 ### Fixed
 - Indentation in change log
 

@@ -6,8 +6,6 @@ node_modules
 
 .github
 CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-PULL_REQUEST_TEMPLATE.md
 
 .babelrc
 .jshintrc
