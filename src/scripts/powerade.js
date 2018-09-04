@@ -16,9 +16,9 @@ export class Powerade {
           (this.options.border.includes('right') ? 1 : 0)
       },
       y: {
-        size: (this.options.border.includes('top') ? 1 : 0) +
+        size: (this.options.border.includes('bottom') ? 1 : 0) +
           this.axis.y.cardinality +
-          (this.options.border.includes('bottom') ? 1 : 0),
+          (this.options.border.includes('top') ? 1 : 0),
         first: this.options.border.includes('bottom') ? 0 : 1,
         last: this.axis.y.cardinality +
           (this.options.border.includes('top') ? 1 : 0)
@@ -46,33 +46,38 @@ export class Powerade {
       outDropzone.setAttribute('data-drop-target', 'out');
       outDropzone.setAttribute('colspan', this.grid.x.size);
       const yHeaderRow = document.createElement('tr');
-      yHeaderRow.appendChild(document.createElement('th'));
+      if (this.options.border.includes('left')) {
+        yHeaderRow.appendChild(document.createElement('th'));
+      }
       yHeaderRow.appendChild(yHeader);
+      if (this.options.border.includes('right')) {
+        yHeaderRow.appendChild(document.createElement('th'));
+      }
       const thead = document.createElement('thead');
       thead.appendChild(outDropzone);
       thead.appendChild(yHeaderRow);
       const tbody = document.createElement('tbody');
       const table = document.createElement('table');
       table.appendChild(thead);
-      const firstColumn = this.grid.y.first;
-      const lastColumn = this.grid.y.last;
+      const firstColumn = this.grid.x.first;
+      const lastColumn = this.grid.x.last;
       if (this.options.border.includes('top')) {
         const extraTopRow = document.createElement('tr');
         for (let column = firstColumn; column <= lastColumn; column++) {
-          const row = this.grid.x.last;
+          const row = this.grid.y.last;
           const dropzone = document.createElement('td');
-          dropzone.classList.add(...this.dropzoneClasses(row, column));
-          dropzone.setAttribute('data-drop-target', `${row}-${column}`);
+          dropzone.classList.add(...this.dropzoneClasses(column, row));
+          dropzone.setAttribute('data-drop-target', `${column}-${row}`);
           extraTopRow.appendChild(dropzone);
         }
         tbody.appendChild(extraTopRow);
       }
       const xHeaderRow = document.createElement('tr');
       for (let column = firstColumn; column <= lastColumn; column++) {
-        const row = this.axis.x.cardinality;
+        const row = this.axis.y.cardinality;
         const dropzone = document.createElement('td');
-        dropzone.classList.add(...this.dropzoneClasses(row, column));
-        dropzone.setAttribute('data-drop-target', `${row}-${column}`);
+        dropzone.classList.add(...this.dropzoneClasses(column, row));
+        dropzone.setAttribute('data-drop-target', `${column}-${row}`);
         xHeaderRow.appendChild(dropzone);
       }
       const xHeader = document.createElement('th');
@@ -80,14 +85,15 @@ export class Powerade {
       xHeader.id = 'dimension-x';
       xHeaderRow.appendChild(xHeader);
       tbody.appendChild(xHeaderRow);
-      for (let row = 1; row <= this.axis.x.cardinality; row++) {
+      const lastRow = this.axis.y.cardinality - 1;
+      const firstRow = this.grid.y.first;
+      for (let row = lastRow; row >= firstRow; row--) {
         const nonFirstRow = document.createElement('tr');
         for (let column = firstColumn; column <= lastColumn; column++) {
-          const currentRow = this.axis.x.cardinality - row;
           const dropzone = document.createElement('td');
-          const dropzoneClasses = this.dropzoneClasses(currentRow, column);
+          const dropzoneClasses = this.dropzoneClasses(column, row);
           dropzone.classList.add(...dropzoneClasses);
-          dropzone.setAttribute('data-drop-target', `${currentRow}-${column}`);
+          dropzone.setAttribute('data-drop-target', `${column}-${row}`);
           nonFirstRow.appendChild(dropzone);
         }
         tbody.appendChild(nonFirstRow);
@@ -173,43 +179,43 @@ export class Powerade {
     }
   }
 
-  dropzoneClasses(row, column) {
+  dropzoneClasses(column, row) {
     const classes = [];
     if (this.options.border.includes('bottom') &&
-        (row === this.grid.x.first)) {
+        (row === this.grid.y.first)) {
       classes.push('extra-bottom');
     }
     if (this.options.border.includes('left') &&
-        (column === this.grid.y.first)) {
+        (column === this.grid.x.first)) {
       classes.push('extra-left');
     }
-    if ((1 <= row && row <= this.axis.x.cardinality) &&
-        (1 <= column && column <= this.axis.y.cardinality)) {
+    if ((1 <= row && row <= this.axis.y.cardinality) &&
+        (1 <= column && column <= this.axis.x.cardinality)) {
       switch (row) {
         case 1: classes.push('border-bottom'); break;
-        case this.axis.x.cardinality:
+        case this.axis.y.cardinality:
         classes.push('border-top'); break;
-        case this.axis.x.cardinality / 2:
+        case this.axis.y.cardinality / 2:
         classes.push('axis-top'); break;
-        case (this.axis.x.cardinality / 2) + 1:
+        case (this.axis.y.cardinality / 2) + 1:
         classes.push('axis-bottom'); break;
       }
       switch (column) {
         case 1: classes.push('border-left'); break;
-        case this.axis.y.cardinality:
+        case this.axis.x.cardinality:
         classes.push('border-right'); break;
-        case this.axis.y.cardinality / 2:
+        case this.axis.x.cardinality / 2:
         classes.push('axis-right'); break;
-        case (this.axis.y.cardinality / 2) + 1:
+        case (this.axis.x.cardinality / 2) + 1:
         classes.push('axis-left'); break;
       }
     }
     if (this.options.border.includes('top') &&
-        (row === this.grid.x.last)) {
+        (row === this.grid.y.last)) {
       classes.push('extra-top');
     }
     if (this.options.border.includes('right') &&
-        (column === this.grid.y.last)) {
+        (column === this.grid.x.last)) {
       classes.push('extra-right');
     }
     return classes;
