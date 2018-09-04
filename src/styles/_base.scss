@@ -12,12 +12,22 @@ $z-gradient-list: (
 );
 .powerade {
   table {
+    display: table;
+    font: inherit;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
     border-collapse: collapse;
     border-spacing: 0;
+    width: 100%;
+    text-align: left;
+    color: black;
     caption, tbody, tfoot, thead, tr, th, td, div, span {
       margin: 0;
       padding: 0;
       border: 0;
+      background-color: transparent;
       vertical-align: middle;
     }
     tr {
