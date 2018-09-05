@@ -11,87 +11,105 @@ $z-gradient-list: (
   ('unknown', white, gray)
 );
 .powerade {
-  table {
-    display: table;
-    font: inherit;
-    border: 0;
-    margin: 0;
-    padding: 0;
-    background-color: transparent;
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    text-align: left;
-    color: black;
-    caption, tbody, tfoot, thead, tr, th, td, div, span {
-      margin: 0;
-      padding: 0;
-      border: 0;
-      background-color: transparent;
-      vertical-align: middle;
+  .container {
+    position: relative;
+    &::after {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
     }
-    tr {
-      border: none;
-      td {
-        text-align: center;
-        margin: 10px auto 30px;
-        padding: 1px;
-        height: 150px;
-        width: 150px;
-        max-height: 150px;
-        max-width: 150px;
-        &.border-top {
-          border-top-style: $default-border-style;
-          border-top-width: $default-border-width;
-        }
-        &.axis-top {
-          border-top-style: $default-border-style;
-          border-top-width: $default-axis-width;
-        }
-        &.border-right {
-          border-right-style: $default-border-style;
-          border-right-width: $default-border-width;
-        }
-        &.axis-right {
-          border-right-style: $default-border-style;
-          border-right-width: $default-axis-width;
-        }
-        &.border-bottom {
-          border-bottom-style: $default-border-style;
-          border-bottom-width: $default-border-width;
-        }
-        &.axis-bottom {
-          border-bottom-style: $default-border-style;
-          border-bottom-width: $default-axis-width;
-        }
-        &.border-left {
-          border-left-style: $default-border-style;
-          border-left-width: $default-border-width;
-        }
-        &.axis-left {
-          border-left-style: $default-border-style;
-          border-left-width: $default-axis-width;
-        }
-        &[class*=extra] {
-        }
+    .visualization {
+      display: grid;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      grid-template-columns: auto 95% auto;
+      grid-template-rows: auto 95% auto;
+      grid-template-areas:
+        ". y-header ."
+        ". map x-header"
+        ". z-legend .";
+    }
+    .x-header {
+      display: flex;
+      grid-area: x-header;
+      justify-content: center;
+      .x-label {
+        align-self: center;
       }
-      th.y-label {
-        text-align: center;
+    }
+    .y-header {
+      display: flex;
+      grid-area: y-header;
+      justify-content: center;
+      .y-label {
+        align-self: center;
       }
+    }
+    .z-legend {
+      grid-area: z-legend;
+    }
+    .map {
+      grid-area: map;
+      display: grid;
+      min-height: 0;
+      min-width: 0;
     }
   }
   @each $position, $background-color, $color in $z-gradient-list {
     [data-z-gradient='#{$position}'] {
-      border: solid 2px $background-color;
+      border: solid 1px $background-color;
       background-color: $background-color;
       color: $color;
     }
   }
   [data-drop-target] {
     background-color: white;
-    border: dashed 1px black;
-    border-radius: 2px;
+    border: solid 1px lightgray;
     transition: background-color 0.3s;
+    overflow: scroll;
+    &.border-top {
+      border-top-style: $default-border-style;
+      border-top-width: $default-border-width;
+      border-top: solid 4px black;
+    }
+    &.axis-top {
+      border-top-style: $default-border-style;
+      border-top-width: $default-axis-width;
+      border-top: solid 1px black;
+    }
+    &.border-right {
+      border-right-style: $default-border-style;
+      border-right-width: $default-border-width;
+      border-right: solid 4px black;
+    }
+    &.axis-right {
+      border-right-style: $default-border-style;
+      border-right-width: $default-axis-width;
+      border-right: solid 1px black;
+    }
+    &.border-bottom {
+      border-bottom-style: $default-border-style;
+      border-bottom-width: $default-border-width;
+      border-bottom: solid 4px black;
+    }
+    &.axis-bottom {
+      border-bottom-style: $default-border-style;
+      border-bottom-width: $default-axis-width;
+      border-bottom: solid 1px black;
+    }
+    &.border-left {
+      border-left-style: $default-border-style;
+      border-left-width: $default-border-width;
+      border-left: solid 4px black;
+    }
+    &.axis-left {
+      border-left-style: $default-border-style;
+      border-left-width: $default-axis-width;
+      border-left: solid 1px black;
+    }
+    &[class*=extra] {
+    }
   }
   [data-drop-target='out'] {
     border: none;
@@ -106,10 +124,10 @@ $z-gradient-list: (
     margin: 1px 1px;
     height: 32px;
     font-size: 13px;
-    border-radius: 8px;
+    border-radius: 4px;
     max-width: 100px;
     img {
-      border-radius: 8px;
+      border-radius: 4px;
       float: left;
       height: 32px;
       width: 32px;

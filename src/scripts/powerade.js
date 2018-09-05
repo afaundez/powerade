@@ -38,80 +38,53 @@ export class Powerade {
 
   build(target = this.target) {
     if (target !== null) {
-      const yHeader = document.createElement('th');
-      yHeader.setAttribute('colspan', this.axis.x.cardinality);
-      yHeader.id = 'dimension-y';
-      yHeader.classList.add('y-label');
-      const outDropzone = document.createElement('td');
-      outDropzone.setAttribute('data-drop-target', 'out');
-      outDropzone.setAttribute('colspan', this.grid.x.size);
-      const yHeaderRow = document.createElement('tr');
-      if (this.options.border.includes('left')) {
-        yHeaderRow.appendChild(document.createElement('th'));
-      }
-      yHeaderRow.appendChild(yHeader);
-      if (this.options.border.includes('right')) {
-        yHeaderRow.appendChild(document.createElement('th'));
-      }
-      const thead = document.createElement('thead');
-      thead.appendChild(outDropzone);
-      thead.appendChild(yHeaderRow);
-      const tbody = document.createElement('tbody');
-      const table = document.createElement('table');
-      table.appendChild(thead);
-      const firstColumn = this.grid.x.first;
-      const lastColumn = this.grid.x.last;
-      if (this.options.border.includes('top')) {
-        const extraTopRow = document.createElement('tr');
-        for (let column = firstColumn; column <= lastColumn; column++) {
-          const row = this.grid.y.last;
-          const dropzone = document.createElement('td');
-          dropzone.classList.add(...this.dropzoneClasses(column, row));
-          dropzone.setAttribute('data-drop-target', `${column}-${row}`);
-          extraTopRow.appendChild(dropzone);
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('container');
+      const visualization = document.createElement('div');
+      visualization.classList.add('visualization');
+      const yHeader = document.createElement('div');
+      yHeader.classList.add('y-header');
+      const yLabel = document.createElement('span');
+      yLabel.classList.add('y-label');
+      yHeader.appendChild(yLabel);
+      const xHeader = document.createElement('div');
+      xHeader.classList.add('x-header');
+      const xLabel = document.createElement('span');
+      xLabel.classList.add('x-label');
+      xHeader.appendChild(xLabel);
+      const zLegend = document.createElement('div');
+      zLegend.classList.add('z-legend');
+      const map = document.createElement('div');
+      map.classList.add('map');
+      map.setAttribute('style',
+        `grid-template-columns: repeat(${this.grid.x.size}, 1fr); ` +
+        `grid-template-rows: repeat(${this.grid.y.size}, 1fr);`);
+      visualization.appendChild(yHeader);
+      visualization.appendChild(xHeader);
+      visualization.appendChild(zLegend);
+      visualization.appendChild(map);
+      for(let row = this.grid.y.last; row >= this.grid.y.first; row--) {
+        for(let col = this.grid.x.first; col <= this.grid.x.last; col++) {
+          const dropzone = document.createElement('div');
+          dropzone.classList.add(...this.dropzoneClasses(col, row));
+          dropzone.setAttribute('data-drop-target', `${col}-${row}`);
+          map.appendChild(dropzone);
         }
-        tbody.appendChild(extraTopRow);
       }
-      const xHeaderRow = document.createElement('tr');
-      for (let column = firstColumn; column <= lastColumn; column++) {
-        const row = this.axis.y.cardinality;
-        const dropzone = document.createElement('td');
-        dropzone.classList.add(...this.dropzoneClasses(column, row));
-        dropzone.setAttribute('data-drop-target', `${column}-${row}`);
-        xHeaderRow.appendChild(dropzone);
-      }
-      const xHeader = document.createElement('th');
-      xHeader.setAttribute('rowspan', this.axis.y.cardinality);
-      xHeader.id = 'dimension-x';
-      xHeaderRow.appendChild(xHeader);
-      tbody.appendChild(xHeaderRow);
-      const lastRow = this.axis.y.cardinality - 1;
-      const firstRow = this.grid.y.first;
-      for (let row = lastRow; row >= firstRow; row--) {
-        const nonFirstRow = document.createElement('tr');
-        for (let column = firstColumn; column <= lastColumn; column++) {
-          const dropzone = document.createElement('td');
-          const dropzoneClasses = this.dropzoneClasses(column, row);
-          dropzone.classList.add(...dropzoneClasses);
-          dropzone.setAttribute('data-drop-target', `${column}-${row}`);
-          nonFirstRow.appendChild(dropzone);
-        }
-        tbody.appendChild(nonFirstRow);
-      }
-      table.appendChild(tbody);
-      target.appendChild(table);
+      wrapper.appendChild(visualization);
+      target.appendChild(wrapper);
       target.classList.add(...this.options.style);
     }
   }
 
   load(target = this.target, elements = this.elements, options = this.options) {
-    const view = target.querySelector('table');
+    const view = target.querySelector('.visualization');
     for (let attribute in options.dataset) {
       const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
     }
     for (let axis of ['x', 'y']) {
-      const header = view.querySelector(`th#dimension-${axis}`);
+      const header = view.querySelector(`.${axis}-label`);
       header.textContent = this.axis[axis].label;
       view.setAttribute(`data-dimension-${axis}`, header.textContent);
     }
@@ -119,7 +92,7 @@ export class Powerade {
       const value = this.element.values[this.axis[axis].label];
       return typeof(parseInt(value)) === 'number' ? value : 'unknown';
     };
-    const outDropzone = target.querySelector('[data-drop-target="out"]');
+    const outDropzone = view.querySelector('[data-drop-target="out"]');
     for (let [i, element] of elements.entries()) {
       const [xValue, yValue, zValue] = ['x', 'y', 'z'].map(mapAxis, {
         element: element,
@@ -127,6 +100,7 @@ export class Powerade {
       });
       const dropzoneSelector = `[data-drop-target="${xValue}-${yValue}"]`;
       const dropzone = view.querySelector(dropzoneSelector) || outDropzone;
+      if (!dropzone) { continue; }
       const draggable = document.createElement('div');
       draggable.id = element.id || `pw-draggable-${i}`;
       draggable.setAttribute('draggable', true);
