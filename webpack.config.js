@@ -1,4 +1,5 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = [
   {
@@ -10,6 +11,9 @@ module.exports = [
     output: {
       library: 'Powerade'
     },
+    plugins: [
+      new CleanWebpackPlugin(['dist'])
+    ],
     module: {
       rules: [
         {
@@ -36,6 +40,7 @@ module.exports = [
       library: 'Powerade'
     },
     plugins: [
+      new CleanWebpackPlugin(['dist']),
       new HtmlWebpackPlugin({
         title: 'Powerade',
         filename: 'example.html',
