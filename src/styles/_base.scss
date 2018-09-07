@@ -11,24 +11,32 @@ $z-gradient-list: (
   ('unknown', white, gray)
 );
 .powerade {
+  div, figure, img, figcaption {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  max-width: 100%;
   .container {
     position: relative;
+    max-width: 100%;
     &::after {
-      content: "";
+      content: '';
       display: block;
       padding-bottom: 100%;
     }
     .visualization {
       display: grid;
-      position: absolute;
-      width: 100%;
-      height: 100%;
       grid-template-columns: auto 95% auto;
       grid-template-rows: auto 95% auto;
       grid-template-areas:
-        ". y-header ."
-        ". map x-header"
-        ". z-legend .";
+        '. y-header .'
+        '. map x-header'
+        '. z-legend .';
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
     .x-header {
       display: flex;
@@ -52,8 +60,7 @@ $z-gradient-list: (
     .map {
       grid-area: map;
       display: grid;
-      min-height: 0;
-      min-width: 0;
+      max-width: 100%;
     }
   }
   @each $position, $background-color, $color in $z-gradient-list {
@@ -64,10 +71,48 @@ $z-gradient-list: (
     }
   }
   [data-drop-target] {
+    display: flex;
+    flex-wrap: wrap;
     background-color: white;
     border: solid 1px lightgray;
-    transition: background-color 0.3s;
     overflow: scroll;
+    justify-content: space-around;
+    align-content: space-around;
+    padding: 0.4rem;
+    list-style: none;
+    transition: all 0.3s ease-in-out;
+    [draggable] {
+      display: flex;
+      flex-direction: column;
+      align-self: center;
+      position: relative;
+      border-style: solid;
+      border-width: 2px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      transition: all 0.3s ease-in-out;
+      img {
+        object-fit: cover;
+        object-position: 50% 15%;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        clear: left;
+      }
+      figcaption {
+        display: block;
+        position: absolute;
+        float: left;
+        bottom: 0;
+        width: 100%;
+        font-size: x-small;
+        text-align: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        background-color: inherit;
+      }
+    }
     &.border-top {
       border-top-style: $default-border-style;
       border-top-width: $default-border-width;
@@ -113,33 +158,6 @@ $z-gradient-list: (
   }
   [data-drop-target='out'] {
     border: none;
-  }
-  [draggable] {
-    box-sizing: content-box;
-    transition: background-color 0.3s;
-    transform: translate(0, 0);
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 1px 1px;
-    height: 32px;
-    font-size: 13px;
-    border-radius: 4px;
-    max-width: 100px;
-    img {
-      border-radius: 4px;
-      float: left;
-      height: 32px;
-      width: 32px;
-    }
-    span {
-      display: block;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      padding-left: 5px;
-      padding-right: 5px;
-    }
   }
   .drag-enter {
     background-color: lightgray;

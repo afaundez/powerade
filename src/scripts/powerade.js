@@ -38,8 +38,8 @@ export class Powerade {
 
   build(target = this.target) {
     if (target !== null) {
-      const wrapper = document.createElement('div');
-      wrapper.classList.add('container');
+      const container = document.createElement('div');
+      container.classList.add('container');
       const visualization = document.createElement('div');
       visualization.classList.add('visualization');
       const yHeader = document.createElement('div');
@@ -56,9 +56,8 @@ export class Powerade {
       zLegend.classList.add('z-legend');
       const map = document.createElement('div');
       map.classList.add('map');
-      map.setAttribute('style',
-        `grid-template-columns: repeat(${this.grid.x.size}, 1fr); ` +
-        `grid-template-rows: repeat(${this.grid.y.size}, 1fr);`);
+      map.style.gridTemplateColumns = `repeat(${this.grid.x.size}, 1fr)`;
+      map.style.gridTemplateRows = `repeat(${this.grid.y.size}, 1fr)`;
       visualization.appendChild(yHeader);
       visualization.appendChild(xHeader);
       visualization.appendChild(zLegend);
@@ -71,10 +70,21 @@ export class Powerade {
           map.appendChild(dropzone);
         }
       }
-      wrapper.appendChild(visualization);
-      target.appendChild(wrapper);
+      container.appendChild(visualization);
+      target.appendChild(container);
       target.classList.add(...this.options.style);
     }
+  }
+
+  updateDropzoneGrid(dropzone) {
+    const nearestSquare = n => Math.pow(Math.pow(n, 0.5) + 1 | 0, 2);
+    const size = Math.pow(nearestSquare(dropzone.childElementCount), 0.5);
+    const draggableSize = `calc(100% / ${size} - 0.2rem)`;
+    for (let draggable of dropzone.children) {
+      draggable.style.width = draggableSize;
+      draggable.style.height = draggableSize;
+    }
+    return;
   }
 
   load(target = this.target, elements = this.elements, options = this.options) {
@@ -101,22 +111,27 @@ export class Powerade {
       const dropzoneSelector = `[data-drop-target="${xValue}-${yValue}"]`;
       const dropzone = view.querySelector(dropzoneSelector) || outDropzone;
       if (!dropzone) { continue; }
-      const draggable = document.createElement('div');
+      const draggable = document.createElement('figure');
       draggable.id = element.id || `pw-draggable-${i}`;
       draggable.setAttribute('draggable', true);
       draggable.setAttribute('data-z-gradient', zValue);
       if (this.options.display.avatar && (element.avatar !== null)) {
-        const dragableAvatar = document.createElement('img');
+        const avatar = document.createElement('img');
         const missingAvatar = this.options.display.missingAvatar;
-        dragableAvatar.setAttribute('src', element.avatar || missingAvatar);
+        avatar.setAttribute('src', element.avatar || missingAvatar);
         const onerrorAvatar = this.options.display.onerrorAvatar;
-        dragableAvatar.setAttribute('onerror', `this.src='${onerrorAvatar}'`);
-        draggable.appendChild(dragableAvatar);
+        avatar.setAttribute('onerror',
+          `this.src='${onerrorAvatar}'; this.onerror = null;`
+        );
+        draggable.appendChild(avatar);
       }
-      const draggableLabel = document.createElement('span');
-      draggableLabel.append(element.label);
-      if (this.options.display.label) { draggable.appendChild(draggableLabel); }
+      if (this.options.display.label) {
+        const figcaption = document.createElement('figcaption');
+        figcaption.append(element.label);
+        draggable.appendChild(figcaption);
+      }
       dropzone.appendChild(draggable);
+      this.updateDropzoneGrid(dropzone);
     }
     this.interact();
   }
@@ -131,6 +146,7 @@ export class Powerade {
         default: this.classList.remove('drag-enter');
       }
     };
+    const updateDropzoneGrid = this.updateDropzoneGrid;
     const handleOverDrop = function(event) {
       event.preventDefault();
       if (event.type !== 'drop') { return; }
@@ -139,8 +155,11 @@ export class Powerade {
       this.classList.remove('drag-enter');
       if (dragged.parentNode === this) { return; }
       handlers.drop(event.target, dragged);
-      dragged.parentNode.removeChild(dragged);
+      const dropzone = dragged.parentNode;
+      dropzone.removeChild(dragged);
+      updateDropzoneGrid(dropzone);
       this.appendChild(dragged);
+      updateDropzoneGrid(this);
     };
     for (let draggable of this.target.querySelectorAll('[draggable]')) {
       draggable.addEventListener('dragstart', handleDragStart);
