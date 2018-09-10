@@ -235,7 +235,7 @@ export class Powerade {
   }
 
   merge(target, source) {
-    let clone = Object.assign({}, target)
+    let clone = Object.assign({}, target);
     for (let key of Object.keys(source)) {
       if (source[key] instanceof Object) {
         Object.assign(source[key], this.merge(clone[key], source[key]));
