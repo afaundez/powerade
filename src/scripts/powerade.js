@@ -22,8 +22,14 @@ export class Powerade {
         first: this.options.border.includes('bottom') ? 0 : 1,
         last: this.axis.y.cardinality +
           (this.options.border.includes('top') ? 1 : 0)
+      },
+      z: {
+        size: this.axis.z.cardinality + 1,
+        first: 0,
+        last: this.axis.z.cardinality + 1
       }
     };
+    console.log(this);
   }
 
   clean(target = this.target) {
@@ -54,6 +60,14 @@ export class Powerade {
       xHeader.appendChild(xLabel);
       const zLegend = document.createElement('div');
       zLegend.classList.add('z-legend');
+      const zLabel = document.createElement('span');
+      zLabel.classList.add('z-label');
+      zLegend.appendChild(zLabel);
+      for(let z = this.grid.z.first; z <= this.grid.z.last; z++) {
+        const zBox = document.createElement('span');
+        zBox.setAttribute('data-z-gradient', z);
+        zLegend.appendChild(zBox);
+      }
       const map = document.createElement('div');
       map.classList.add('map');
       map.style.gridTemplateColumns = `repeat(${this.grid.x.size}, 1fr)`;
@@ -93,7 +107,7 @@ export class Powerade {
       const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
     }
-    for (let axis of ['x', 'y']) {
+    for (let axis of ['x', 'y', 'z']) {
       const header = view.querySelector(`.${axis}-label`);
       header.textContent = this.axis[axis].label;
       view.setAttribute(`data-dimension-${axis}`, header.textContent);
@@ -138,37 +152,43 @@ export class Powerade {
 
   interact(handlers = this.options.handlers) {
     const handleDragStart = function(event) {
+      event.stopPropagation();
       event.dataTransfer.setData('text', this.id);
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setDragImage(this, 20, 20);
     };
-    const handleDragEnterLeave = function(event) {
-      switch (event.type) {
-        case 'dragenter': this.classList.add('drag-enter'); break;
-        default: this.classList.remove('drag-enter');
-      }
+    const handleDragEnter = event => {
+      event.currentTarget.classList.add('drag-enter');
+    };
+    const handleDragOver = event => {
+      event.preventDefault();
+    };
+    const handleDragLeave = function(event) {
+      event.currentTarget.classList.remove('drag-enter');
     };
     const updateDropzoneGrid = this.updateDropzoneGrid;
-    const handleOverDrop = function(event) {
+    const handleDragDrop = function(event) {
       event.preventDefault();
-      if (event.type !== 'drop') { return; }
-      const draggedId = event.dataTransfer.getData('text');
-      const dragged = document.getElementById(draggedId);
-      this.classList.remove('drag-enter');
-      if (dragged.parentNode === this) { return; }
-      handlers.drop(event.target, dragged);
-      const dropzone = dragged.parentNode;
-      dropzone.removeChild(dragged);
-      updateDropzoneGrid(dropzone);
-      this.appendChild(dragged);
-      updateDropzoneGrid(this);
+      const targetDropzone = event.currentTarget;
+      targetDropzone.classList.remove('drag-enter');
+      const draggableId = event.dataTransfer.getData('text');
+      const draggable = document.getElementById(draggableId);
+      const currentDropzone = draggable.parentNode;
+      if (currentDropzone === targetDropzone) { return; }
+      currentDropzone.removeChild(draggable);
+      updateDropzoneGrid(currentDropzone);
+      targetDropzone.appendChild(draggable);
+      updateDropzoneGrid(targetDropzone);
+      handlers.drop(targetDropzone, draggable);
     };
     for (let draggable of this.target.querySelectorAll('[draggable]')) {
       draggable.addEventListener('dragstart', handleDragStart);
     }
     for (let dropzone of this.target.querySelectorAll('[data-drop-target]')) {
-      dropzone.addEventListener('dragover', handleOverDrop);
-      dropzone.addEventListener('drop', handleOverDrop);
-      dropzone.addEventListener('dragenter', handleDragEnterLeave);
-      dropzone.addEventListener('dragleave', handleDragEnterLeave);
+      dropzone.addEventListener('dragenter', handleDragEnter);
+      dropzone.addEventListener('dragover', handleDragOver);
+      dropzone.addEventListener('dragleave', handleDragLeave);
+      dropzone.addEventListener('drop', handleDragDrop);
     }
   }
 
@@ -215,13 +235,14 @@ export class Powerade {
   }
 
   merge(target, source) {
+    let clone = Object.assign({}, target)
     for (let key of Object.keys(source)) {
       if (source[key] instanceof Object) {
-        Object.assign(source[key], this.merge(target[key], source[key]));
+        Object.assign(source[key], this.merge(clone[key], source[key]));
       }
     }
-    if (source instanceof Array) { target = source; }
-    else { Object.assign(target || {}, source); }
-    return target;
+    if (source instanceof Array) { clone = source; }
+    else { Object.assign(clone || {}, source); }
+    return clone;
   }
 }

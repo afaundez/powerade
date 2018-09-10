@@ -1,15 +1,6 @@
 $default-border-style: solid;
 $default-border-width: 4px;
 $default-axis-width: 2px;
-$z-gradient-list: (
-  (0, gainsboro, black),
-  (1, lightgray, black),
-  (2, silver, black),
-  (3, darkgray, white),
-  (4, gray, white),
-  (5, dimgray, white),
-  ('unknown', white, gray)
-);
 .powerade {
   div, figure, img, figcaption {
     box-sizing: border-box;
@@ -17,7 +8,6 @@ $z-gradient-list: (
     padding: 0;
     border: 0;
   }
-  max-width: 100%;
   .container {
     position: relative;
     max-width: 100%;
@@ -26,6 +16,7 @@ $z-gradient-list: (
       display: block;
       padding-bottom: 100%;
     }
+    font-family: Arial, Helvetica, sans-serif;
     .visualization {
       display: grid;
       grid-template-columns: auto 95% auto;
@@ -55,112 +46,116 @@ $z-gradient-list: (
       }
     }
     .z-legend {
+      display: flex;
       grid-area: z-legend;
+      justify-content: center;
+      padding: 1rem;
+      .z-label {
+        align-self: center;
+      }
+      [data-z-gradient] {
+        display: inline-block;
+        position: relative;
+        border: solid 1px white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
     }
     .map {
       grid-area: map;
       display: grid;
       max-width: 100%;
-    }
-  }
-  @each $position, $background-color, $color in $z-gradient-list {
-    [data-z-gradient='#{$position}'] {
-      border: solid 1px $background-color;
-      background-color: $background-color;
-      color: $color;
-    }
-  }
-  [data-drop-target] {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: white;
-    border: solid 1px lightgray;
-    overflow: scroll;
-    justify-content: space-around;
-    align-content: space-around;
-    padding: 0.4rem;
-    list-style: none;
-    transition: all 0.3s ease-in-out;
-    [draggable] {
-      display: flex;
-      flex-direction: column;
-      align-self: center;
-      position: relative;
-      border-style: solid;
-      border-width: 2px;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-      transition: all 0.3s ease-in-out;
-      img {
-        object-fit: cover;
-        object-position: 50% 15%;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        clear: left;
+      [data-drop-target] {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-content: space-around;
+        padding: 0.1rem;
+        background-color: aliceblue;
+        background-clip: padding-box;
+        border: solid 2px transparent;
+        overflow: scroll;
+        transition: all 0.2s ease;
+        [draggable] {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          position: relative;
+          transition: all 0.3s ease-in-out;
+          img {
+            object-fit: cover;
+            object-position: 50% 15%;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            clear: left;
+          }
+          figcaption {
+            display: block;
+            position: absolute;
+            float: left;
+            bottom: 0;
+            width: 100%;
+            font-size: xx-small;
+            text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            background-color: inherit;
+          }
+        }
+        &.axis-top {
+          border-top-style: $default-border-style;
+          border-top-width: $default-axis-width;
+          border-top: solid 2px cornflowerblue;
+        }
+        &.axis-right {
+          border-right-style: $default-border-style;
+          border-right-width: $default-axis-width;
+          border-right: solid 2px cornflowerblue;
+        }
+        &.axis-bottom {
+          border-bottom-style: $default-border-style;
+          border-bottom-width: $default-axis-width;
+          border-bottom: solid 2px cornflowerblue;
+        }
+        &.axis-left {
+          border-left-style: $default-border-style;
+          border-left-width: $default-axis-width;
+          border-left: solid 2px cornflowerblue;
+        }
+        &[class*=extra] {
+          background-color: whitesmoke;
+          border-radius: 2px;
+        }
+        &.drag-enter {
+          transform: scale(1.1);
+          box-shadow: 5px 10px 8px rgba(lightgray, 0.6);
+          border-color: transparent;
+          * {
+            pointer-events: none;
+          }
+        }
       }
-      figcaption {
-        display: block;
-        position: absolute;
-        float: left;
-        bottom: 0;
-        width: 100%;
-        font-size: x-small;
-        text-align: center;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        background-color: inherit;
-      }
-    }
-    &.border-top {
-      border-top-style: $default-border-style;
-      border-top-width: $default-border-width;
-      border-top: solid 4px black;
-    }
-    &.axis-top {
-      border-top-style: $default-border-style;
-      border-top-width: $default-axis-width;
-      border-top: solid 1px black;
-    }
-    &.border-right {
-      border-right-style: $default-border-style;
-      border-right-width: $default-border-width;
-      border-right: solid 4px black;
-    }
-    &.axis-right {
-      border-right-style: $default-border-style;
-      border-right-width: $default-axis-width;
-      border-right: solid 1px black;
-    }
-    &.border-bottom {
-      border-bottom-style: $default-border-style;
-      border-bottom-width: $default-border-width;
-      border-bottom: solid 4px black;
-    }
-    &.axis-bottom {
-      border-bottom-style: $default-border-style;
-      border-bottom-width: $default-axis-width;
-      border-bottom: solid 1px black;
-    }
-    &.border-left {
-      border-left-style: $default-border-style;
-      border-left-width: $default-border-width;
-      border-left: solid 4px black;
-    }
-    &.axis-left {
-      border-left-style: $default-border-style;
-      border-left-width: $default-axis-width;
-      border-left: solid 1px black;
-    }
-    &[class*=extra] {
     }
   }
   [data-drop-target='out'] {
-    border: none;
   }
-  .drag-enter {
-    background-color: lightgray;
-    border-style: solid;
+  $z-gradient-list: (
+    (0, crimson, white),
+    (1, lightpink, white),
+    (2, moccasin, white),
+    (3, darkkhaki, white),
+    (4, mediumseagreen, white),
+    (5, teal, white),
+    ('unknown', white, gray)
+  );
+  @each $position, $background-color, $color in $z-gradient-list {
+    [data-z-gradient='#{$position}'] {
+      border: solid 1px $background-color;
+      background-color: rgba($background-color, 0.8);
+      color: $color;
+    }
   }
 }
