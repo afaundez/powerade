@@ -1,0 +1,60 @@
+// $default-border-style: solid;
+// $default-border-width: 4px;
+// $default-axis-width: 2px;
+.powerade {
+  .visualization {
+    .map {
+      [data-drop-target] {
+        justify-content: space-around;
+        align-content: space-around;
+        padding: 0.1rem;
+        background-color: aliceblue;
+        background-clip: padding-box;
+        &.drag-enter {
+          transform: scale(1.1);
+          box-shadow: 5px 10px 8px rgba(lightgray, 0.6);
+        }
+        // &.axis-top {
+        //   border-top-style: $default-border-style;
+        //   border-top-width: $default-axis-width;
+        //   border-top: solid 2px cornflowerblue;
+        // }
+        // &.axis-right {
+        //   border-right-style: $default-border-style;
+        //   border-right-width: $default-axis-width;
+        //   border-right: solid 2px cornflowerblue;
+        // }
+        // &.axis-bottom {
+        //   border-bottom-style: $default-border-style;
+        //   border-bottom-width: $default-axis-width;
+        //   border-bottom: solid 2px cornflowerblue;
+        // }
+        // &.axis-left {
+        //   border-left-style: $default-border-style;
+        //   border-left-width: $default-axis-width;
+        //   border-left: solid 2px cornflowerblue;
+        // }
+        &[class*=extra] {
+          background-color: whitesmoke;
+          border-radius: 2px;
+        }
+      }
+    }
+    $z-gradient-list: (
+      (0, crimson, white),
+      (1, lightpink, white),
+      (2, moccasin, white),
+      (3, darkkhaki, white),
+      (4, mediumseagreen, white),
+      (5, teal, white),
+      ('unknown', white, gray)
+    );
+    @each $position, $background-color, $color in $z-gradient-list {
+      [data-z-gradient='#{$position}'] {
+        border-color: $background-color;
+        background-color: rgba($background-color, 0.8);
+        color: $color;
+      }
+    }
+  }
+}

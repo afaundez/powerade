@@ -43,8 +43,8 @@ export class Powerade {
 
   build(target = this.target) {
     if (target !== null) {
-      const container = document.createElement('div');
-      container.classList.add('container');
+      const powerade = document.createElement('div');
+      powerade.classList.add('powerade');
       const visualization = document.createElement('div');
       visualization.classList.add('visualization');
       const yHeader = document.createElement('div');
@@ -62,11 +62,15 @@ export class Powerade {
       const zLabel = document.createElement('span');
       zLabel.classList.add('z-label');
       zLegend.appendChild(zLabel);
+      const zList = document.createElement('ul');
+      zList.classList.add('z-values');
       for(let z = this.grid.z.first; z <= this.grid.z.last; z++) {
-        const zBox = document.createElement('span');
-        zBox.setAttribute('data-z-gradient', z);
-        zLegend.appendChild(zBox);
+        const zValue = document.createElement('li');
+        zValue.classList.add('z-value');
+        zValue.setAttribute('data-z-gradient', z);
+        zList.appendChild(zValue);
       }
+      zLegend.appendChild(zList);
       const map = document.createElement('div');
       map.classList.add('map');
       map.style.gridTemplateColumns = `repeat(${this.grid.x.size}, 1fr)`;
@@ -83,20 +87,17 @@ export class Powerade {
           map.appendChild(dropzone);
         }
       }
-      container.appendChild(visualization);
-      target.appendChild(container);
-      target.classList.add(...this.options.style);
+      powerade.appendChild(visualization);
+      powerade.classList.add(...this.options.style);
+      target.appendChild(powerade);
     }
   }
 
   updateDropzoneGrid(dropzone) {
     const nearestSquare = n => Math.pow(Math.pow(n, 0.5) + 1 | 0, 2);
     const size = Math.pow(nearestSquare(dropzone.childElementCount), 0.5);
-    const draggableSize = `calc(100% / ${size} - 0.2rem)`;
-    for (let draggable of dropzone.children) {
-      draggable.style.width = draggableSize;
-      draggable.style.height = draggableSize;
-    }
+    dropzone.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+    dropzone.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     return;
   }
 
@@ -124,10 +125,11 @@ export class Powerade {
       const dropzoneSelector = `[data-drop-target="${xValue}-${yValue}"]`;
       const dropzone = view.querySelector(dropzoneSelector) || outDropzone;
       if (!dropzone) { continue; }
-      const draggable = document.createElement('figure');
-      draggable.id = element.id || `pw-draggable-${i}`;
+      const draggable = document.createElement('div');
+      draggable.id = element.id || `pw-figure-${i}`;
       draggable.setAttribute('draggable', true);
-      draggable.setAttribute('data-z-gradient', zValue);
+      const figure = document.createElement('figure');
+      figure.setAttribute('data-z-gradient', zValue);
       if (this.options.display.avatar && (element.avatar !== null)) {
         const avatar = document.createElement('img');
         const missingAvatar = this.options.display.missingAvatar;
@@ -136,13 +138,14 @@ export class Powerade {
         avatar.setAttribute('onerror',
           `this.src='${onerrorAvatar}'; this.onerror = null;`
         );
-        draggable.appendChild(avatar);
+        figure.appendChild(avatar);
       }
       if (this.options.display.label) {
         const figcaption = document.createElement('figcaption');
         figcaption.append(element.label);
-        draggable.appendChild(figcaption);
+        figure.appendChild(figcaption);
       }
+      draggable.appendChild(figure);
       dropzone.appendChild(draggable);
       this.updateDropzoneGrid(dropzone);
     }
