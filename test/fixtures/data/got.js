@@ -123,11 +123,11 @@ export const elements = [
 ];
 
 export const options = {
-  border: ['left', 'bottom', 'top', 'right'],
+  border: ['left', 'bottom'],
   dimensions: {
     x: { label: 'Power' },
     y: { label: 'Influence' },
-    z: { label: 'Leadership' }
+    z: { label: 'Leadership', cardinality: 2}
   },
   display: {
     label: true

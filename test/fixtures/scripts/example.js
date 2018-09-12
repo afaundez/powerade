@@ -3,7 +3,7 @@ const target = document.querySelector('#powerade-got');
 import { elements, options }  from '../data/got.js';
 Powerade.init(target, elements, options);
 
-const usersTarget = document.querySelector('#powerade-radomuser');
+const usersTarget = document.querySelector('#powerade-randomuser');
 const users = require('../data/users.json').results.map(user => {
   return {
     label: user.name.first,
