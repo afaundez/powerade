@@ -29,7 +29,6 @@ export class Powerade {
         last: this.axis.z.cardinality + 1
       }
     };
-    console.log(this);
   }
 
   clean(target = this.target) {
