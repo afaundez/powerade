@@ -1,7 +1,7 @@
 {
   "name": "powerade",
-  "version": "0.2.0",
-  "description": "stakeholder visualization",
+  "version": "0.3.0",
+  "description": "Stakeholder analysis JS library for HTML visualization",
   "scripts": {
     "build": "webpack --config-name=npm",
     "watch": "webpack --watch --config-name=dev",
