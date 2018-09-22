@@ -1,12 +1,13 @@
 /* globals expect */
 const Powerade = require('../src/main');
 const target = document.createElement('div');
+const powerade = Powerade.init(target, [], {});
 
-test('executes Powerade.init', () => {
-  const powerade = Powerade.init(target, [], {
-    border: [ 'left' ],
-    display: { label: false }
-  });
-  expect(powerade.constructor.name)
-    .toBe('Powerade');
+test('executes Powerade.init succesfully', () => {
+  expect(powerade.constructor.name).toBe('Powerade');
+});
+
+test('creates visualization structure', () => {
+  const dropzones = target.querySelectorAll('[data-drop-target]');
+  expect(dropzones.length).toBe(36);
 });
