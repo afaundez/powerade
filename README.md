@@ -7,7 +7,7 @@ Choose one of this options
 ### Load this javascript in your DOM:
 
 ```html
-<script src='https://cdn.jsdelivr.net/npm/powerade@0.2.0/dist/main.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/powerade@0.3.0/dist/main.js'></script>
 ```
 
 ### Use a package manager
@@ -50,7 +50,7 @@ You can change the default options using a third parameter. Note that as you cha
 
 ```javascript
 const options = {
-  border: ['left', 'bottom'],
+  borders: ['left', 'bottom'],
   dimensions: {
     x: { cardinality: 4, label: 'Power' },
     y: { cardinality: 4, label: 'Influence' },
@@ -66,5 +66,5 @@ Powerade.init(target, elements, options);
 
 Check [the javascript used]({{ "/assets/scripts/example.js" | relative_url }}) in the example above.
 
-<script src='https://cdn.jsdelivr.net/npm/powerade@0.2.0/dist/main.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/powerade@0.3.0/dist/main.js'></script>
 <script src='{{ "/assets/scripts/example.js" | relative_url }}'></script>

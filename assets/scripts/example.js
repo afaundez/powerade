@@ -28,14 +28,11 @@ const elements = [
 ];
 
 const options = {
-  border: ['left', 'bottom'],
+  borders: ['left', 'bottom'],
   dimensions: {
     x: { label: 'Power' },
     y: { label: 'Influence' },
     z: { label: 'Leadership' }
-  },
-  display: {
-    label: false
   }
 };
 
