@@ -1,0 +1,55 @@
+.powerade {
+  font-family: Arial, Helvetica, sans-serif;
+  .visualization {
+    .header-x {
+      justify-content: center;
+      .label-x {
+        align-self: center;
+      }
+    }
+    .header-y {
+      justify-content: center;
+      .label-y {
+        align-self: center;
+      }
+    }
+    .legend-z {
+      justify-content: center;
+      padding: 0.1rem;
+      .label-z {
+        align-self: center;
+        color: lightgray;
+      }
+      .values-z {
+        padding-left: 0.5rem;
+        align-items: center;
+        .value-z {
+          border-radius: 50%;
+          margin: 0.05rem;
+        }
+      }
+    }
+    .map {
+      [data-drop-target] {
+        background-color: whitesmoke;
+        transition: all 0.2s ease;
+        padding: 0.1rem;
+        figure {
+          img {
+            object-position: 50% 15%;
+            object-fit: cover;
+            clear: left;
+          }
+          figcaption {
+            text-align: center;
+            text-overflow: ellipsis;
+            font-size: 0.5rem;
+          }
+        }
+        &.drag-enter {
+          background-color: silver;
+        }
+      }
+    }
+  }
+}

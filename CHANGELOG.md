@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [unreleased]
 ### Added
 - Usage instructions on readme
+- New css style
+- Add third dimension legend
 ### Changed
 - NPM ignore .tgz and .npmignore
 - Git ignore .tgz
 - Move contributing and pull request template to .github
+- Replace table layout with grid layout
+- Refactor code into smaller files
 ### Fixed
 - Indentation in change log
 

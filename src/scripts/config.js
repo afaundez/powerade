@@ -1,6 +1,6 @@
 export const DEFAULTS = {
   style: ['powerade'],
-  border: ['left', 'bottom', 'top', 'right'],
+  borders: ['left', 'bottom', 'top', 'right'],
   dimensions: {
     x: { cardinality: 4, label: 'x-dimension' },
     y: { cardinality: 4, label: 'y-dimension' },
