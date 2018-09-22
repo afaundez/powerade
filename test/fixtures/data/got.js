@@ -123,7 +123,7 @@ export const elements = [
 ];
 
 export const options = {
-  border: ['left', 'bottom'],
+  borders: ['left', 'bottom'],
   dimensions: {
     x: { label: 'Power' },
     y: { label: 'Influence' },

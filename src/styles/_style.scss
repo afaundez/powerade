@@ -47,9 +47,7 @@
           }
         }
         &.drag-enter {
-          transform: scale(1.1);
-          box-shadow: 5px 10px 8px rgba(dimgray, 0.6);
-          border-color: transparent;
+          background-color: silver;
         }
       }
     }
