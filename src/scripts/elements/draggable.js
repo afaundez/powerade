@@ -9,7 +9,7 @@ export function build(id, xValue, yValue, zValue, element, options) {
   draggable.id = id;
   draggable.setAttribute('draggable', true);
   const figure = document.createElement('figure');
-  figure.setAttribute('data-z-gradient', zValue);
+  figure.setAttribute('data-gradient-z', zValue);
   if (options.display.avatar && (element.avatar !== null)) {
     const avatar = document.createElement('img');
     const missingAvatar = options.display.missingAvatar;

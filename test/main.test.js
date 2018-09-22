@@ -10,4 +10,8 @@ test('executes Powerade.init succesfully', () => {
 test('creates visualization structure', () => {
   const dropzones = target.querySelectorAll('[data-drop-target]');
   expect(dropzones.length).toBe(36);
+  const axes = target.querySelectorAll('[class*="header-"]');
+  expect(axes.length).toBe(3);
+  const legend = target.querySelectorAll('[class*="legend-"]');
+  expect(legend.length).toBe(1);
 });

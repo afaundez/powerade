@@ -51,7 +51,7 @@
       ('unknown', white, gray)
     );
     @each $position, $background-color, $color in $z-gradient-list {
-      [data-z-gradient='#{$position}'] {
+      [data-gradient-z='#{$position}'] {
         border-color: $background-color;
         background-color: rgba($background-color, 0.8);
         color: $color;
