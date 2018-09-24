@@ -25,7 +25,11 @@ module.exports = [
             { loader: 'sass-loader' }
           ]
         },
-        { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+        {
+          test: /\.js$/,
+          exclude: [/node_modules/, /_site/],
+          loader: 'babel-loader'
+        }
       ]
     }
   },
