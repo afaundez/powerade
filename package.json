@@ -1,12 +1,12 @@
 {
   "name": "powerade",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Stakeholder analysis JS library for HTML visualization",
   "scripts": {
     "build": "webpack --config-name=npm",
     "watch": "webpack --watch --config-name=dev",
     "lint": "jshint src test",
-    "test": "jest"
+    "test": "jest test"
   },
   "repository": {
     "type": "git",

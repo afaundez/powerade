@@ -11,7 +11,7 @@ Choose one of this options:
 #### Loading this javascript in your DOM:
 
 ```html
-<script src='https://cdn.jsdelivr.net/npm/powerade@0.3.0/dist/main.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/powerade@0.3.1/dist/main.js'></script>
 ```
 
 #### Use a package manager
