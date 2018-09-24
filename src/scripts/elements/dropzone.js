@@ -1,8 +1,8 @@
-const updateDropzoneGrid = dropzone => {
+const updateDropzoneDraggables = draggables => {
   const nearestSquare = n => Math.pow(Math.pow(n, 0.5) + 1 | 0, 2);
-  const size = Math.pow(nearestSquare(dropzone.childElementCount), 0.5);
-  dropzone.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-  dropzone.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  const size = Math.pow(nearestSquare(draggables.childElementCount), 0.5);
+  draggables.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+  draggables.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
   return;
 };
 
@@ -49,13 +49,15 @@ const types = (grid, axis, borders, column, row) => {
 };
 
 export function remove(draggable, dropzone) {
-  dropzone.removeChild(draggable);
-  updateDropzoneGrid(dropzone);
+  const draggables = dropzone.querySelector('.draggables');
+  draggables.removeChild(draggable);
+  updateDropzoneDraggables(draggables);
 }
 
 export function insert(draggable, dropzone) {
-  dropzone.appendChild(draggable);
-  updateDropzoneGrid(dropzone);
+  const draggables = dropzone.querySelector('.draggables');
+  draggables.appendChild(draggable);
+  updateDropzoneDraggables(draggables);
 }
 
 export function find(row, column, target=document) {
@@ -63,35 +65,46 @@ export function find(row, column, target=document) {
   return target.querySelector(dropzoneSelector);
 }
 
-export function build(grid, axis, col, row, options) {
-  const handleDragEnter = event => {
-    event.currentTarget.classList.add('drag-enter');
-  };
-  const handleDragOver = event => {
-    event.preventDefault();
-  };
-  const handleDragLeave = function(event) {
-    event.currentTarget.classList.remove('drag-enter');
-  };
+const handleDragEnter = event => {
+  event.preventDefault();
+  const dropzone = event.currentTarget.closest('.dropzone');
+  dropzone.classList.add('drag-enter');
+};
+const handleDragOver = event => {
+  event.preventDefault();
+  event.currentTarget.closest('.dropzones').classList.add('dragging');
+};
+const handleDragLeave = event => {
+  const dropzone = event.currentTarget.closest('.dropzone');
+  dropzone.classList.remove('drag-enter');
+};
 
-  const handleDragDrop = function(event) {
+const handleDragDrop = customAction => {
+  return event => {
     event.preventDefault();
     const targetDropzone = event.currentTarget;
     targetDropzone.classList.remove('drag-enter');
     const draggableId = event.dataTransfer.getData('text');
     const draggable = document.getElementById(draggableId);
-    const currentDropzone = draggable.parentNode;
+    const currentDropzone = draggable.closest('.dropzone');
     if (currentDropzone === targetDropzone) { return; }
     remove(draggable, currentDropzone);
     insert(draggable, targetDropzone);
-    options.handlers.drop(targetDropzone, draggable);
+    customAction(targetDropzone, draggable);
   };
+};
+
+export function build(grid, axis, col, row, options) {
+  const draggables = document.createElement('div');
+  draggables.className = 'draggables';
   const dropzone = document.createElement('div');
+  dropzone.className = 'dropzone';
   dropzone.classList.add(...types(grid, axis, options.borders, col, row));
   dropzone.setAttribute('data-drop-target', `${col}-${row}`);
   dropzone.addEventListener('dragenter', handleDragEnter);
   dropzone.addEventListener('dragover', handleDragOver);
   dropzone.addEventListener('dragleave', handleDragLeave);
-  dropzone.addEventListener('drop', handleDragDrop);
+  dropzone.addEventListener('drop', handleDragDrop(options.handlers.drop));
+  dropzone.appendChild(draggables);
   return dropzone;
 }

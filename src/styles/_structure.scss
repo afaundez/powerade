@@ -1,113 +1,152 @@
-.powerade {
+.square-container {
   position: relative;
-  max-width: 100%;
+  overflow: hidden;
+  width: 100%;
   &::after {
     content: '';
     display: block;
-    padding-bottom: 100%;
+    padding-top: 100%;
   }
+}
+
+.square {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.powerade {
+  @extend .square-container;
   div, figure, img, figcaption, ul, li {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     border: 0;
   }
-  .visualization {
-    display: grid;
-    grid-template-columns: 90% auto;
-    grid-template-rows: auto 90% auto;
-    grid-template-areas:
-      'header-y .'
-      'map header-x'
-      'legend-z .';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    .header-x {
-      display: flex;
-      grid-area: header-x;
-      .label-x {
-        word-break: break-all
-      }
-    }
-    .header-y {
-      display: flex;
-      grid-area: header-y;
-      .label-y {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
-    .legend-z {
-      display: flex;
-      grid-area: legend-z;
-      .label-z {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .values-z {
-        display: flex;
-        max-height: 100%;
-        .value-z {
-          display: inline-block;
-          width: 1rem;
-          height: 1rem;
-          border: 0;
-        }
-      }
-    }
-    .map {
-      grid-area: map;
+  .layout {
+    @extend .square;
+    .areas {
       display: grid;
-      grid-row-gap: 0.2rem;
-      grid-column-gap: 0.2rem;
-      max-width: 100%;
-      max-height: 100%;
-      height: 100%;
-      width: 100%;
-      [data-drop-target] {
-        display: grid;
-        min-height: 0;
-        min-width: 0;
-        border: solid 0.05rem whitesmoke;
-        &.drag-enter {
-          border-color: dimgray;
-          * {
-            pointer-events: none;
+      grid-template-columns: 8fr 2fr;
+      grid-template-rows: 1fr  8fr 1fr;
+      grid-template-areas:
+        'header-y .'
+        'map header-x'
+        'legend-z .';
+      .header-x {
+        display: flex;
+        grid-area: header-x;
+        max-width: 100%;
+        max-height: 100%;
+        .label-x {
+          word-break: break-all
+        }
+      }
+      .header-y {
+        display: flex;
+        grid-area: header-y;
+        max-width: 100%;
+        max-height: 100%;
+        .label-y {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+      .legend-z {
+        display: flex;
+        grid-area: legend-z;
+        max-width: 100%;
+        max-height: 100%;
+        .label-z {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .values-z {
+          display: flex;
+          .value-z {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 0;
           }
         }
-        [draggable] {
+      }
+      .map {
+        grid-area: map;
+        .dropzones {
           display: grid;
-          min-height: 0;
-          min-width: 0;
-          overflow: hidden;
-          figure {
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            img {
-              display: block;
-              width: 100%;
-              height: 100%;
-              overflow: hidden;
+          grid-row-gap: 0.2rem;
+          grid-column-gap: 0.2rem;
+          width: 100%;
+          &.dragging {
+            .dropzone {
+              .draggables {
+                // pointer-events: none;
+                * {
+                  pointer-events: none;
+                  // display: none;
+                }
+                .draggable {
+                  &.dragging {
+                    pointer-events: all;
+                  }
+                }
+              }
             }
-            figcaption {
-              position: absolute;
-              float: left;
-              width: 100%;
-              bottom: 0;
-              background-color: inherit;
-              overflow: hidden;
-              white-space: nowrap;
+          }
+          .dropzone {
+            @extend .square-container;
+            border: solid 0.05rem whitesmoke;
+            &.drag-enter {
+              border-color: dimgray;
+              // .draggables {
+              //   * {
+              //     pointer-events: none;
+              //   }
+              // }
+            }
+            .draggables {
+              @extend .square;
+              display: grid;
+              .draggable {
+                @extend .square-container;
+                .draggable-content {
+                  @extend .square;
+                  figure {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    width: 100%;
+                    position: relative;
+                    background-color: inherit;
+                    img {
+                      width: 100%;
+                      height: 100%;
+                    }
+                    figcaption {
+                      flex: 1;
+                      position: absolute;
+                      float: left;
+                      width: 100%;
+                      bottom: 0;
+                      background-color: inherit;
+                      overflow: hidden;
+                      white-space: nowrap;
+                    }
+                  }
+                }
+              }
             }
           }
         }
       }
-    }
-    [data-drop-target='out'] {
     }
     $z-gradient-list: (
       (0, gainsboro, dimgray),
