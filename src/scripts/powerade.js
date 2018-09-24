@@ -52,23 +52,26 @@ export class Powerade {
 
   build(target = this.target) {
     if (target !== null) {
-      const visualization = document.createElement('div');
-      visualization.classList.add('visualization');
-      visualization.appendChild(Axis.buildHeader('y'));
-      visualization.appendChild(Axis.buildHeader('x'));
-      visualization.appendChild(Axis.buildLegend('z', this.grid));
       const map = Map.build(this.grid, this.axes, this.options);
-      visualization.appendChild(map);
+      const areas = document.createElement('div');
+      areas.className = 'areas';
+      areas.appendChild(Axis.buildHeader('y'));
+      areas.appendChild(Axis.buildHeader('x'));
+      areas.appendChild(Axis.buildLegend('z', this.grid));
+      areas.appendChild(map);
+      const layout = document.createElement('div');
+      layout.className = 'layout';
+      layout.appendChild(areas);
       const powerade = document.createElement('div');
-      powerade.classList.add('powerade');
-      powerade.appendChild(visualization);
+      powerade.className = 'powerade';
       powerade.classList.add(...this.options.style);
+      powerade.appendChild(layout);
       target.appendChild(powerade);
     }
   }
 
   load(target = this.target, elements = this.elements, options = this.options) {
-    const view = target.querySelector('.visualization');
+    const view = target.querySelector('.powerade > .layout > .areas');
     for (let attribute in options.dataset) {
       const value = options.dataset[attribute];
       view.setAttribute(`data-${attribute}`, value);
@@ -80,16 +83,15 @@ export class Powerade {
       const value = this.element.values[this.axes[axis].label];
       return typeof(parseInt(value)) === 'number' ? value : 'unknown';
     };
-    const outDropzone = view.querySelector('[data-drop-target="out"]');
     for (let [i, element] of elements.entries()) {
       const [xValue, yValue, zValue] = ['x', 'y', 'z'].map(mapAxis, {
         element: element,
         axes: this.axes
       });
-      const dropzone = Dropzone.find(xValue, yValue, view) || outDropzone;
+      const dropzone = Dropzone.find(xValue, yValue, view);
       if (!dropzone) { continue; }
-      const draggable = Draggable.build(element.id || `pw-figure-${i}`,
-        xValue, yValue, zValue, element, options);
+      const draggableId = element.id || `pw-figure-${i}`;
+      const draggable = Draggable.build(draggableId, zValue, element, options);
       Dropzone.insert(draggable, dropzone);
     }
   }

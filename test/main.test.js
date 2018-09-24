@@ -8,18 +8,18 @@ test('executes Powerade.init succesfully', () => {
   expect(powerade.constructor.name).toBe('Powerade');
 });
 
-test('creates visualization structure', () => {
-  const visualization = target.querySelector('.visualization');
-  const dropzones = visualization.querySelectorAll('[data-drop-target]');
+test('creates layout structure', () => {
+  const layout = target.querySelector('.layout');
+  const dropzones = layout.querySelectorAll('.dropzone');
   expect(dropzones.length).toBe(25);
-  const axes = visualization.querySelectorAll('[class*="header-"]');
+  const axes = layout.querySelectorAll('[class*="header-"]');
   expect(axes.length).toBe(3);
-  const legend = visualization.querySelectorAll('[class*="legend-"]');
+  const legend = layout.querySelectorAll('[class*="legend-"]');
   expect(legend.length).toBe(1);
 });
 
-test('load elements into visualization', () => {
-  const visualization = target.querySelector('.visualization');
-  const draggables = visualization.querySelectorAll('[draggable="true"]');
+test('load elements into layout', () => {
+  const layout = target.querySelector('.layout');
+  const draggables = layout.querySelectorAll('.draggable');
   expect(draggables.length).toBe(24);
 });
