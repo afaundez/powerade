@@ -17,3 +17,5 @@ src
 test
 
 *.tgz
+
+_site
